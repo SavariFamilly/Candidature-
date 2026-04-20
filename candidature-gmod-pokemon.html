@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candidature Animateur - Serveur Garry's Mod Pokémon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    /* ===========================================
+       CANDIDATURE GMOD POKÉMON - LEE
+       Page complète avec mini-jeux
+       =========================================== */
+
+    :root {
+      --bg-main: #0f0f1a;
+      --bg-widget: #1a1a2e;
+      --bg-center: #161625;
+      --bg-card: #1e1e32;
+      --border: rgba(255, 255, 255, 0.08);
+      --text-primary: #ffffff;
+      --text-secondary: #cccccc;
+      --accent-red: #e63946;
+      --accent-gold: #f0c040;
+      --accent-blue: #4dabf7;
+      --accent-purple: #cc5de8;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-main);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 240px 1fr 240px;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    @media (max-width: 1150px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+      .left-widget, .right-widget {
+        display: none;
+      }
+    }
+
+    .left-widget, .right-widget {
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+      background: var(--bg-widget);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .center-content {
+      background: var(--bg-center);
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      overflow-y: auto;
+      max-height: 100vh;
+    }
+
+    /* Widgets */
+    .widget-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      color: var(--accent-gold);
+      text-align: center;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 8px;
+      text-align: center;
+      cursor: pointer;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      color: var(--accent-gold);
+      border-bottom: 2px solid var(--accent-gold);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Canvas */
+    canvas {
+      width: 100%;
+      height: 200px;
+      background: #000;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    /* Buttons */
+    .btn {
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      margin: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: #3a8bc7;
+    }
+
+    .btn:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+
+    /* Stats display */
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      margin: 4px 0;
+      font-size: 10px;
+    }
+
+    .coins-display {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: var(--accent-gold);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    /* Work slots */
+    .work-slots {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .work-slot {
+      width: 100%;
+      height: 60px;
+      background: #2a2a3e;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .work-slot canvas {
+      width: 40px;
+      height: 40px;
+      margin: 0;
+    }
+
+    /* Shop items */
+    .shop-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+    }
+
+    /* Collection */
+    .collection {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .pokemon-card {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      margin: 4px 0;
+      background: var(--bg-card);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .pokemon-card canvas {
+      width: 32px;
+      height: 32px;
+      margin-right: 8px;
+    }
+
+    .pokemon-info {
+      flex: 1;
+      font-size: 10px;
+    }
+
+    /* Candidature styles */
+    .candidature h1 {
+      font-size: 2.5rem;
+      color: var(--accent-gold);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .candidature h2 {
+      font-size: 1.8rem;
+      color: var(--accent-blue);
+      margin: 30px 0 15px 0;
+      border-bottom: 2px solid var(--accent-blue);
+      padding-bottom: 10px;
+    }
+
+    .candidature p {
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--accent-gold);
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Mini-jeu Combat (Gauche) -->
+    <div class="left-widget">
+      <div class="widget-title">COMBAT</div>
+      <canvas id="combat-canvas" width="200" height="200" aria-label="Zone de combat Pokémon"></canvas>
+      <div id="combat-info">
+        <div class="stat">Victoires: <span id="victories">0</span></div>
+        <div class="stat">Pièces: <span id="combat-coins">0</span></div>
+      </div>
+      <button class="btn" id="fight-btn">Combattre</button>
+      <div id="fighter-select">
+        <button class="btn" id="prev-fighter">←</button>
+        <span id="current-fighter">Aucun Pokémon</span>
+        <button class="btn" id="next-fighter">→</button>
+      </div>
+    </div>
+
+    <!-- Candidature Centrale -->
+    <div class="center-content">
+      <div class="candidature">
+        <h1>Candidature Animateur - Serveur Garry's Mod Pokémon</h1>
+
+        <h2>Informations Personnelles</h2>
+        <p><strong>Nom:</strong> Lee</p>
+        <p><strong>Âge:</strong> 19 ans</p>
+        <p><strong>Expérience Garry's Mod:</strong> 4943.9 heures</p>
+        <p><strong>Serveurs RP gérés:</strong> 7+</p>
+        <p><strong>Positions staff occupées:</strong> 2</p>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">4943.9h</div>
+            <div class="stat-label">Heures Garry's Mod</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">7+</div>
+            <div class="stat-label">Serveurs RP</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">2</div>
+            <div class="stat-label">Positions Staff</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">19</div>
+            <div class="stat-label">Ans</div>
+          </div>
+        </div>
+
+        <h2>Motivation</h2>
+        <p>Passionné par l'univers Pokémon depuis mon enfance, je souhaite apporter mon expérience en animation et gestion de communauté à votre serveur Garry's Mod. Avec plus de 4900 heures de jeu et une expérience dans 7 serveurs RP, je suis convaincu de pouvoir créer des événements mémorables et maintenir un environnement accueillant pour tous les joueurs.</p>
+
+        <h2>Expériences</h2>
+        <p>En tant qu'ancien staff sur 2 serveurs différents, j'ai organisé de nombreux événements, géré la modération et contribué au développement de la communauté. Mes compétences en animation me permettent de créer des scénarios engageants et de maintenir l'intérêt des joueurs sur le long terme.</p>
+
+        <h2>Compétences</h2>
+        <ul>
+          <li><strong>Animation:</strong> Création d'événements dynamiques et immersifs</li>
+          <li><strong>Modération:</strong> Gestion de communauté et résolution de conflits</li>
+          <li><strong>Communication:</strong> Interaction positive avec les joueurs</li>
+          <li><strong>Créativité:</strong> Développement de contenu original</li>
+        </ul>
+
+        <h2>Événements Organisés</h2>
+        <p>J'ai participé à l'organisation de tournois Pokémon, quêtes communautaires et événements spéciaux qui ont rassemblé des centaines de joueurs. Mon objectif est de continuer à innover et proposer du contenu frais régulièrement.</p>
+
+        <h2>Engagement</h2>
+        <p>Je m'engage à être présent régulièrement, à respecter les règles du serveur et à contribuer positivement à la communauté. Mon expérience passée m'a appris l'importance de la cohérence et de la qualité dans le travail d'animation.</p>
+
+        <h2>Contact</h2>
+        <p>N'hésitez pas à me contacter pour toute question supplémentaire. Je suis impatient de rejoindre votre équipe !</p>
+      </div>
+    </div>
+
+    <!-- Mini-jeu Capture & Idle (Droite) -->
+    <div class="right-widget">
+      <div class="widget-title">POKÉMON IDLE</div>
+      <div class="coins-display">Pièces: <span id="total-coins">0</span></div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="capture">Capture</div>
+        <div class="tab" data-tab="work">Ferme</div>
+        <div class="tab" data-tab="shop">Shop</div>
+        <div class="tab" data-tab="collection">Équipe</div>
+        <div class="tab" data-tab="stats">Stats</div>
+      </div>
+
+      <div id="capture" class="tab-content active">
+        <canvas id="capture-canvas" width="200" height="200" aria-label="Zone de capture Pokémon"></canvas>
+        <div class="stat">Poké Balls: <span id="pokeballs">1</span></div>
+        <button class="btn" id="capture-btn">Capturer</button>
+        <div id="capture-result"></div>
+      </div>
+
+      <div id="work" class="tab-content">
+        <div class="work-slots" id="work-slots"></div>
+        <div class="stat">Pièces/sec: <span id="coins-per-sec">0</span></div>
+      </div>
+
+      <div id="shop" class="tab-content">
+        <div class="shop-item">
+          <span>Poké Ball (10 pièces)</span>
+          <button class="btn" data-item="pokeball">Acheter</button>
+        </div>
+        <div class="shop-item">
+          <span>Super Ball (50 pièces)</span>
+          <button class="btn" data-item="superball">Acheter</button>
+        </div>
+        <div class="shop-item">
+          <span>Hyper Ball (150 pièces)</span>
+          <button class="btn" data-item="hyperball">Acheter</button>
+        </div>
+        <div class="shop-item">
+          <span>Pierre Feu (200 pièces)</span>
+          <button class="btn" data-item="fire-stone">Acheter</button>
+        </div>
+        <div class="shop-item">
+          <span>Boost Attaque (120 pièces)</span>
+          <button class="btn" data-item="attack-boost">Acheter</button>
+        </div>
+      </div>
+
+      <div id="collection" class="tab-content">
+        <div class="collection" id="collection-list"></div>
+        <button class="btn" id="fuse-btn" disabled>Fusionner</button>
+      </div>
+
+      <div id="stats" class="tab-content">
+        <div class="stat">Total capturés: <span id="stat-caught">0</span></div>
+        <div class="stat">Meilleure rareté: <span id="stat-rarity">Aucune</span></div>
+        <div class="stat">Pièces générées: <span id="stat-coins">0</span></div>
+        <div class="stat">Victoires: <span id="stat-victories">0</span></div>
+        <div class="stat">Fusions: <span id="stat-fusions">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // État global du jeu
+    window.gameState = {
+      coins: 0,
+      pokeballs: 1,
+      team: [],
+      workers: Array(10).fill(null),
+      fighter: null,
+      victories: 0,
+      stats: {
+        totalCaught: 0,
+        totalCoins: 0,
+        fusions: 0,
+        bestRarity: 'Aucune'
+      }
+    };
+
+    // Types de Pokémon
+    const POKEMON_TYPES = {
+      fire: { name: 'Flamo', color: '#ff6b35', hp: 100, attack: 22, defense: 14 },
+      water: { name: 'Aqua', color: '#4dabf7', hp: 110, attack: 16, defense: 18 },
+      grass: { name: 'Bulbu', color: '#52c41a', hp: 90, attack: 14, defense: 16 },
+      electric: { name: 'Volt', color: '#f0c040', hp: 85, attack: 20, defense: 12 },
+      psychic: { name: 'Psyk', color: '#cc5de8', hp: 95, attack: 18, defense: 15 },
+      normal: { name: 'Normy', color: '#d9d9d9', hp: 80, attack: 12, defense: 20 }
+    };
+
+    // Raretés
+    const RARITIES = {
+      common: { name: 'Commun', color: '#cccccc', rate: 0.45, coinsPerSec: 1 },
+      rare: { name: 'Rare', color: '#4dabf7', rate: 0.30, coinsPerSec: 3 },
+      epic: { name: 'Épique', color: '#cc5de8', rate: 0.15, coinsPerSec: 8 },
+      legendary: { name: 'Légendaire', color: '#f0c040', rate: 0.10, coinsPerSec: 20 }
+    };
+
+    // Traits
+    const TRAITS = {
+      mega: { name: 'Méga', rate: 0.08, coinBonus: 1.5, rarityBonus: 0.1 },
+      diamond: { name: 'Diamant', rate: 0.05, coinBonus: 1.8, rarityBonus: 0.15 },
+      awakened: { name: 'Éveillé', rate: 0.04, coinBonus: 2.0, rarityBonus: 0.2 },
+      ancient: { name: 'Ancien', rate: 0.06, coinBonus: 1.6, rarityBonus: 0.12 },
+      shadow: { name: 'Ombral', rate: 0.03, coinBonus: 2.2, rarityBonus: 0.25 },
+      crystal: { name: 'Cristal', rate: 0.04, coinBonus: 1.9, rarityBonus: 0.18 },
+      celestial: { name: 'Céleste', rate: 0.02, coinBonus: 2.5, rarityBonus: 0.3 }
+    };
+
+    // Fonctions utilitaires
+    function randomChoice(obj) {
+      const keys = Object.keys(obj);
+      return obj[keys[Math.floor(Math.random() * keys.length)]];
+    }
+
+    function weightedRandom(choices) {
+      const total = Object.values(choices).reduce((sum, item) => sum + (item.rate || 0), 0);
+      let random = Math.random() * total;
+      for (const [key, item] of Object.entries(choices)) {
+        random -= item.rate || 0;
+        if (random <= 0) return item;
+      }
+      return Object.values(choices)[0];
+    }
+
+    // Fonction de dessin des Pokémon
+    function drawPokemon(ctx, type, x, y, size, evolved = false) {
+      ctx.save();
+      ctx.translate(x, y);
+      const scale = evolved ? 1.2 : 1;
+      ctx.scale(scale, scale);
+
+      const colors = POKEMON_TYPES[type].color;
+      ctx.fillStyle = colors;
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 2;
+
+      switch(type) {
+        case 'fire':
+          // Corps ovale
+          ctx.beginPath();
+          ctx.ellipse(0, 0, size * 0.4, size * 0.3, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Oreilles en flamme
+          ctx.fillStyle = '#ff4444';
+          ctx.beginPath();
+          ctx.moveTo(-size * 0.2, -size * 0.3);
+          ctx.lineTo(-size * 0.1, -size * 0.5);
+          ctx.lineTo(0, -size * 0.3);
+          ctx.closePath();
+          ctx.fill();
+
+          // Queue enflammée
+          ctx.beginPath();
+          ctx.moveTo(size * 0.3, size * 0.1);
+          ctx.quadraticCurveTo(size * 0.5, -size * 0.1, size * 0.4, -size * 0.2);
+          ctx.quadraticCurveTo(size * 0.6, -size * 0.3, size * 0.5, -size * 0.1);
+          ctx.fill();
+
+          // Yeux
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(-size * 0.15, -size * 0.1, size * 0.05, 0, Math.PI * 2);
+          ctx.arc(size * 0.15, -size * 0.1, size * 0.05, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#000';
+          ctx.beginPath();
+          ctx.arc(-size * 0.15, -size * 0.1, size * 0.02, 0, Math.PI * 2);
+          ctx.arc(size * 0.15, -size * 0.1, size * 0.02, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+
+        case 'water':
+          // Corps rond
+          ctx.beginPath();
+          ctx.arc(0, 0, size * 0.35, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Nageoires latérales
+          ctx.fillStyle = '#2e86de';
+          ctx.beginPath();
+          ctx.ellipse(-size * 0.4, 0, size * 0.15, size * 0.25, -Math.PI / 4, 0, Math.PI * 2);
+          ctx.ellipse(size * 0.4, 0, size * 0.15, size * 0.25, Math.PI / 4, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Queue
+          ctx.beginPath();
+          ctx.moveTo(0, size * 0.35);
+          ctx.quadraticCurveTo(size * 0.2, size * 0.5, 0, size * 0.6);
+          ctx.quadraticCurveTo(-size * 0.2, size * 0.5, 0, size * 0.35);
+          ctx.fill();
+
+          // Yeux
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(-size * 0.1, -size * 0.1, size * 0.06, 0, Math.PI * 2);
+          ctx.arc(size * 0.1, -size * 0.1, size * 0.06, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#000';
+          ctx.beginPath();
+          ctx.arc(-size * 0.1, -size * 0.1, size * 0.03, 0, Math.PI * 2);
+          ctx.arc(size * 0.1, -size * 0.1, size * 0.03, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+
+        case 'grass':
+          // Corps trapu
+          ctx.beginPath();
+          ctx.ellipse(0, size * 0.1, size * 0.35, size * 0.25, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Feuilles sur la tête
+          ctx.fillStyle = '#2d5016';
+          ctx.beginPath();
+          ctx.ellipse(-size * 0.2, -size * 0.3, size * 0.15, size * 0.2, -Math.PI / 6, 0, Math.PI * 2);
+          ctx.ellipse(0, -size * 0.35, size * 0.15, size * 0.2, 0, 0, Math.PI * 2);
+          ctx.ellipse(size * 0.2, -size * 0.3, size * 0.15, size * 0.2, Math.PI / 6, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Jambes
+          ctx.fillStyle = colors;
+          ctx.fillRect(-size * 0.1, size * 0.25, size * 0.08, size * 0.15);
+          ctx.fillRect(size * 0.02, size * 0.25, size * 0.08, size * 0.15);
+
+          // Yeux
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(-size * 0.1, -size * 0.05, size * 0.05, 0, Math.PI * 2);
+          ctx.arc(size * 0.1, -size * 0.05, size * 0.05, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#000';
+          ctx.beginPath();
+          ctx.arc(-size * 0.1, -size * 0.05, size * 0.02, 0, Math.PI * 2);
+          ctx.arc(size * 0.1, -size * 0.05, size * 0.02, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+
+        case 'electric':
+          // Corps
+          ctx.beginPath();
+          ctx.ellipse(0, 0, size * 0.3, size * 0.4, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Oreilles longues
+          ctx.beginPath();
+          ctx.moveTo(-size * 0.2, -size * 0.4);
+          ctx.lineTo(-size * 0.1, -size * 0.6);
+          ctx.lineTo(0, -size * 0.4);
+          ctx.closePath();
+          ctx.fill();
+
+          // Queue en éclair
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(0, size * 0.4);
+          ctx.lineTo(-size * 0.1, size * 0.5);
+          ctx.lineTo(size * 0.1, size * 0.6);
+          ctx.lineTo(-size * 0.05, size * 0.7);
+          ctx.stroke();
+
+          // Yeux
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(-size * 0.08, -size * 0.1, size * 0.06, 0, Math.PI * 2);
+          ctx.arc(size * 0.08, -size * 0.1, size * 0.06, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#000';
+          ctx.beginPath();
+          ctx.arc(-size * 0.08, -size * 0.1, size * 0.03, 0, Math.PI * 2);
+          ctx.arc(size * 0.08, -size * 0.1, size * 0.03, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+
+        case 'psychic':
+          // Corps
+          ctx.beginPath();
+          ctx.ellipse(0, 0, size * 0.35, size * 0.3, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Front large
+          ctx.beginPath();
+          ctx.arc(0, -size * 0.1, size * 0.25, 0, Math.PI);
+          ctx.fill();
+
+          // Grands yeux
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(-size * 0.15, -size * 0.05, size * 0.08, 0, Math.PI * 2);
+          ctx.arc(size * 0.15, -size * 0.05, size * 0.08, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#000';
+          ctx.beginPath();
+          ctx.arc(-size * 0.15, -size * 0.05, size * 0.04, 0, Math.PI * 2);
+          ctx.arc(size * 0.15, -size * 0.05, size * 0.04, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Symboles psy
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(0, -size * 0.2, size * 0.1, 0, Math.PI);
+          ctx.moveTo(-size * 0.05, -size * 0.25);
+          ctx.lineTo(-size * 0.05, -size * 0.15);
+          ctx.moveTo(size * 0.05, -size * 0.25);
+          ctx.lineTo(size * 0.05, -size * 0.15);
+          ctx.stroke();
+          break;
+
+        case 'normal':
+          // Corps simple
+          ctx.beginPath();
+          ctx.ellipse(0, 0, size * 0.35, size * 0.35, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Oreilles rondes
+          ctx.beginPath();
+          ctx.arc(-size * 0.2, -size * 0.25, size * 0.08, 0, Math.PI * 2);
+          ctx.arc(size * 0.2, -size * 0.25, size * 0.08, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Yeux
+          ctx.fillStyle = '#fff';
+          ctx.beginPath();
+          ctx.arc(-size * 0.1, -size * 0.05, size * 0.06, 0, Math.PI * 2);
+          ctx.arc(size * 0.1, -size * 0.05, size * 0.06, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#000';
+          ctx.beginPath();
+          ctx.arc(-size * 0.1, -size * 0.05, size * 0.03, 0, Math.PI * 2);
+          ctx.arc(size * 0.1, -size * 0.05, size * 0.03, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Nez
+          ctx.beginPath();
+          ctx.arc(0, size * 0.05, size * 0.02, 0, Math.PI * 2);
+          ctx.fill();
+          break;
+      }
+
+      ctx.restore();
+    }
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+      initTabs();
+      initCapture();
+      initWork();
+      initShop();
+      initCollection();
+      initCombat();
+      initStats();
+      startCoinGeneration();
+      updateUI();
+    });
+
+    // Onglets
+    function initTabs() {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabName = tab.dataset.tab;
+          const widget = tab.closest('.right-widget');
+          widget.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          widget.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          widget.querySelector(`#${tabName}`).classList.add('active');
+        });
+      });
+    }
+
+    // Capture
+    let wildPokemon = null;
+    let captureAnimation = false;
+
+    function initCapture() {
+      const canvas = document.getElementById('capture-canvas');
+      const ctx = canvas.getContext('2d');
+      const captureBtn = document.getElementById('capture-btn');
+
+      // Générer Pokémon sauvage
+      function generateWildPokemon() {
+        const type = randomChoice(POKEMON_TYPES);
+        wildPokemon = {
+          type: Object.keys(POKEMON_TYPES).find(key => POKEMON_TYPES[key] === type),
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2
+        };
+      }
+
+      generateWildPokemon();
+
+      // Animation
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (wildPokemon && !captureAnimation) {
+          // Mouvement
+          wildPokemon.x += wildPokemon.vx;
+          wildPokemon.y += wildPokemon.vy;
+
+          // Rebondir sur les bords
+          if (wildPokemon.x < 20 || wildPokemon.x > canvas.width - 20) wildPokemon.vx *= -1;
+          if (wildPokemon.y < 20 || wildPokemon.y > canvas.height - 20) wildPokemon.vy *= -1;
+
+          drawPokemon(ctx, wildPokemon.type, wildPokemon.x, wildPokemon.y, 20);
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+
+      // Capture
+      canvas.addEventListener('click', (e) => {
+        if (!wildPokemon || captureAnimation || window.gameState.pokeballs <= 0) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+
+        const distance = Math.sqrt((clickX - wildPokemon.x) ** 2 + (clickY - wildPokemon.y) ** 2);
+
+        if (distance < 30) { // Hitbox
+          captureAnimation = true;
+          window.gameState.pokeballs--;
+
+          // Animation de capture
+          let frame = 0;
+          const captureAnim = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPokemon(ctx, wildPokemon.type, wildPokemon.x, wildPokemon.y, 20);
+
+            // Poké Ball
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(wildPokemon.x, wildPokemon.y - frame * 2, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(wildPokemon.x, wildPokemon.y - frame * 2, 8, 0, Math.PI);
+            ctx.fill();
+
+            frame++;
+            if (frame < 20) {
+              requestAnimationFrame(captureAnim);
+            } else {
+              // Capture réussie
+              const rarity = weightedRandom(RARITIES);
+              const trait = Math.random() < 0.15 ? weightedRandom(TRAITS) : null;
+
+              const pokemon = {
+                type: wildPokemon.type,
+                rarity: rarity,
+                trait: trait,
+                evolved: false,
+                attackBoost: 0,
+                defenseBoost: 0,
+                id: Date.now()
+              };
+
+              window.gameState.team.push(pokemon);
+              window.gameState.stats.totalCaught++;
+
+              if (rarity.name === 'Légendaire' || (window.gameState.stats.bestRarity === 'Aucune' ||
+                  ['Commun', 'Rare', 'Épique', 'Légendaire'].indexOf(rarity.name) >
+                  ['Commun', 'Rare', 'Épique', 'Légendaire'].indexOf(window.gameState.stats.bestRarity))) {
+                window.gameState.stats.bestRarity = rarity.name;
+              }
+
+              document.getElementById('capture-result').textContent =
+                `${POKEMON_TYPES[wildPokemon.type].name} ${rarity.name}${trait ? ` ${trait.name}` : ''}`;
+
+              generateWildPokemon();
+              captureAnimation = false;
+              updateUI();
+            }
+          };
+
+          captureAnim();
+        } else {
+          // Échec
+          wildPokemon.vx *= 1.2;
+          wildPokemon.vy *= 1.2;
+        }
+
+        updateUI();
+      });
+    }
+
+    // Travail
+    function initWork() {
+      const slotsContainer = document.getElementById('work-slots');
+
+      for (let i = 0; i < 10; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'work-slot';
+        slot.dataset.index = i;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 40;
+        canvas.height = 40;
+        slot.appendChild(canvas);
+
+        slot.addEventListener('click', () => {
+          const pokemon = window.gameState.workers[i];
+          if (pokemon) {
+            // Retirer du travail
+            window.gameState.team.push(pokemon);
+            window.gameState.workers[i] = null;
+          } else if (window.gameState.team.length > 0) {
+            // Assigner au travail
+            const pokemon = window.gameState.team.pop();
+            window.gameState.workers[i] = pokemon;
+          }
+          updateWorkDisplay();
+          updateUI();
+        });
+
+        slotsContainer.appendChild(slot);
+      }
+
+      updateWorkDisplay();
+    }
+
+    function updateWorkDisplay() {
+      const slots = document.querySelectorAll('.work-slot');
+
+      slots.forEach((slot, i) => {
+        const canvas = slot.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const pokemon = window.gameState.workers[i];
+        if (pokemon) {
+          drawPokemon(ctx, pokemon.type, canvas.width / 2, canvas.height / 2, 15, pokemon.evolved);
+        }
+      });
+    }
+
+    // Génération de pièces
+    function startCoinGeneration() {
+      setInterval(() => {
+        let coinsPerSec = 0;
+        window.gameState.workers.forEach(pokemon => {
+          if (pokemon) {
+            let baseCoins = pokemon.rarity.coinsPerSec;
+            if (pokemon.trait) baseCoins *= pokemon.trait.coinBonus;
+            coinsPerSec += baseCoins;
+          }
+        });
+
+        window.gameState.coins += coinsPerSec;
+        window.gameState.stats.totalCoins += coinsPerSec;
+        document.getElementById('coins-per-sec').textContent = coinsPerSec.toFixed(1);
+        updateUI();
+      }, 1000);
+    }
+
+    // Boutique
+    function initShop() {
+      document.querySelectorAll('[data-item]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = btn.dataset.item;
+          let cost = 0;
+
+          switch(item) {
+            case 'pokeball': cost = 10; break;
+            case 'superball': cost = 50; break;
+            case 'hyperball': cost = 150; break;
+            case 'fire-stone': cost = 200; break;
+            case 'attack-boost': cost = 120; break;
+          }
+
+          if (window.gameState.coins >= cost) {
+            window.gameState.coins -= cost;
+
+            switch(item) {
+              case 'pokeball': window.gameState.pokeballs++; break;
+              case 'superball': /* Logique Super Ball */ break;
+              case 'hyperball': /* Logique Hyper Ball */ break;
+              case 'fire-stone': /* Logique évolution */ break;
+              case 'attack-boost': /* Logique boost */ break;
+            }
+
+            updateUI();
+          }
+        });
+      });
+    }
+
+    // Collection
+    function initCollection() {
+      updateCollectionDisplay();
+    }
+
+    function updateCollectionDisplay() {
+      const container = document.getElementById('collection-list');
+      container.innerHTML = '';
+
+      window.gameState.team.forEach((pokemon, index) => {
+        const card = document.createElement('div');
+        card.className = 'pokemon-card';
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 32;
+        canvas.height = 32;
+        card.appendChild(canvas);
+
+        const ctx = canvas.getContext('2d');
+        drawPokemon(ctx, pokemon.type, 16, 16, 12, pokemon.evolved);
+
+        const info = document.createElement('div');
+        info.className = 'pokemon-info';
+        info.innerHTML = `
+          <div style="color: ${pokemon.rarity.color}">${POKEMON_TYPES[pokemon.type].name}</div>
+          <div style="font-size: 8px; color: #888">${pokemon.rarity.name}${pokemon.trait ? ` ${pokemon.trait.name}` : ''}</div>
+        `;
+        card.appendChild(info);
+
+        card.addEventListener('click', () => {
+          // Logique pour envoyer au combat
+          window.gameState.fighter = pokemon;
+          window.gameState.team.splice(index, 1);
+          updateUI();
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    // Combat
+    function initCombat() {
+      const canvas = document.getElementById('combat-canvas');
+      const ctx = canvas.getContext('2d');
+      const fightBtn = document.getElementById('fight-btn');
+
+      fightBtn.addEventListener('click', () => {
+        if (!window.gameState.fighter) return;
+
+        const enemyType = randomChoice(POKEMON_TYPES);
+        const enemy = {
+          type: Object.keys(POKEMON_TYPES).find(key => POKEMON_TYPES[key] === enemyType),
+          hp: enemyType.hp,
+          maxHp: enemyType.hp,
+          attack: enemyType.attack,
+          defense: enemyType.defense
+        };
+
+        let playerHp = POKEMON_TYPES[window.gameState.fighter.type].hp;
+        let turn = 0;
+
+        const combatLoop = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // Dessiner les Pokémon
+          drawPokemon(ctx, window.gameState.fighter.type, 60, 100, 25, window.gameState.fighter.evolved);
+          drawPokemon(ctx, enemy.type, 140, 100, 25);
+
+          // Barres de vie
+          ctx.fillStyle = '#ff4757';
+          ctx.fillRect(20, 20, (playerHp / POKEMON_TYPES[window.gameState.fighter.type].hp) * 80, 10);
+          ctx.fillRect(100, 20, (enemy.hp / enemy.maxHp) * 80, 10);
+
+          ctx.strokeStyle = '#000';
+          ctx.strokeRect(20, 20, 80, 10);
+          ctx.strokeRect(100, 20, 80, 10);
+
+          if (turn % 2 === 0) {
+            // Tour du joueur
+            const damage = Math.max(1, window.gameState.fighter.attack - enemy.defense);
+            enemy.hp -= damage;
+            ctx.fillText(`- ${damage} PV`, 140, 80);
+          } else {
+            // Tour de l'ennemi
+            const damage = Math.max(1, enemy.attack - POKEMON_TYPES[window.gameState.fighter.type].defense);
+            playerHp -= damage;
+            ctx.fillText(`- ${damage} PV`, 60, 80);
+          }
+
+          turn++;
+
+          if (enemy.hp <= 0) {
+            // Victoire
+            window.gameState.victories++;
+            const reward = window.gameState.fighter.rarity.coinsPerSec * 5;
+            window.gameState.coins += reward;
+            document.getElementById('combat-coins').textContent = reward;
+            updateUI();
+            return;
+          } else if (playerHp <= 0) {
+            // Défaite
+            updateUI();
+            return;
+          }
+
+          setTimeout(combatLoop, 1000);
+        };
+
+        combatLoop();
+      });
+    }
+
+    // Stats
+    function initStats() {
+      updateStatsDisplay();
+    }
+
+    function updateStatsDisplay() {
+      document.getElementById('stat-caught').textContent = window.gameState.stats.totalCaught;
+      document.getElementById('stat-rarity').textContent = window.gameState.stats.bestRarity;
+      document.getElementById('stat-coins').textContent = Math.floor(window.gameState.stats.totalCoins);
+      document.getElementById('stat-victories').textContent = window.gameState.victories;
+      document.getElementById('stat-fusions').textContent = window.gameState.stats.fusions;
+    }
+
+    // Mise à jour UI
+    function updateUI() {
+      document.getElementById('total-coins').textContent = Math.floor(window.gameState.coins);
+      document.getElementById('pokeballs').textContent = window.gameState.pokeballs;
+      document.getElementById('victories').textContent = window.gameState.victories;
+      document.getElementById('current-fighter').textContent =
+        window.gameState.fighter ? POKEMON_TYPES[window.gameState.fighter.type].name : 'Aucun Pokémon';
+
+      updateCollectionDisplay();
+      updateStatsDisplay();
+    }
+  </script>
+</body>
+</html></content>
+<parameter name="filePath">c:\Users\magnu\Anim poke\candidature-gmod-pokemon.html

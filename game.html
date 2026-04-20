@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pokémon Combat — Lee</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #ffffff;
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+
+    #game {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 60px rgba(0,0,0,.14);
+    }
+
+    /* ── HUD ── */
+    .hud {
+      background: #1a1a2e;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .hud-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(8px, 1.5vw, 11px);
+      color: #FFD700;
+      text-shadow: 2px 2px 0 #b8860b;
+    }
+    .wins-badge {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(7px, 1.2vw, 9px);
+      background: #CC0000;
+      color: white;
+      padding: 5px 14px;
+      border-radius: 999px;
+      text-shadow: 1px 1px 0 #880000;
+    }
+
+    /* ══════════════════════════════
+       SCREEN 1 — SELECT
+    ══════════════════════════════ */
+    #screen-select {
+      background: linear-gradient(160deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
+      padding: 48px 24px 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .pixel-logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(22px, 5vw, 38px);
+      color: #CC0000;
+      text-shadow: 4px 4px 0 #880000, -1px -1px 0 #880000;
+      margin-bottom: 4px;
+      letter-spacing: 2px;
+    }
+    .pixel-sub {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(8px, 1.5vw, 11px);
+      color: #444;
+      text-shadow: 1px 1px 0 #ccc;
+      margin-bottom: 10px;
+    }
+    .pixel-choose {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(7px, 1.3vw, 10px);
+      color: #2d6a2d;
+      margin-bottom: 36px;
+    }
+
+    .starter-grid {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .starter-card {
+      background: white;
+      border: 3px solid #d4d4d4;
+      border-radius: 18px;
+      padding: 22px 18px 16px;
+      width: clamp(140px, 30vw, 180px);
+      cursor: pointer;
+      transition: all .2s cubic-bezier(.25,.1,.25,1);
+      text-align: center;
+      position: relative;
+    }
+    .starter-card:hover {
+      transform: scale(1.06) translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,.14);
+      border-color: #aaa;
+    }
+    .starter-card.selected {
+      border-color: #FFD700;
+      box-shadow: 0 0 0 3px #FFD700, 0 14px 40px rgba(255,215,0,.35);
+      transform: scale(1.1) translateY(-8px);
+    }
+    .starter-card img {
+      width: 80px; height: 80px;
+      image-rendering: pixelated;
+      display: block;
+      margin: 0 auto 10px;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,.15));
+    }
+    .starter-card:nth-child(2) img { animation-delay: -1s; }
+    .starter-card:nth-child(3) img { animation-delay: -2s; }
+
+    .starter-name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(7px, 1.3vw, 9px);
+      color: #222;
+      display: block;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+    .starter-hp {
+      font-size: 12px;
+      color: #888;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    .btn-start {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(9px, 1.8vw, 13px);
+      background: #CC0000;
+      color: white;
+      border: none;
+      padding: 16px 36px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #880000, 0 10px 24px rgba(204,0,0,.3);
+      transition: all .15s;
+      text-shadow: 2px 2px 0 #880000;
+      line-height: 1.6;
+    }
+    .btn-start:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 0 #880000, 0 16px 30px rgba(204,0,0,.4);
+    }
+    .btn-start:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #880000;
+    }
+    .btn-start:disabled {
+      background: #bbb;
+      box-shadow: 0 4px 0 #888;
+      cursor: not-allowed;
+      text-shadow: none;
+    }
+
+    /* ══════════════════════════════
+       SCREEN 2 — BATTLE
+    ══════════════════════════════ */
+    #screen-battle {
+      display: none;
+      flex-direction: column;
+    }
+
+    .battle-field {
+      background: linear-gradient(180deg, #87CEEB 0%, #b0e0ff 52%, #90EE90 52%, #66BB6A 100%);
+      height: clamp(240px, 35vw, 310px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ground shadows */
+    .battle-field::before {
+      content: '';
+      position: absolute;
+      bottom: 48%;
+      left: 5%; right: 5%;
+      height: 18px;
+      background: radial-gradient(ellipse 100% 100% at 50% 50%, rgba(0,0,0,.08), transparent);
+      border-radius: 50%;
+    }
+
+    /* trees deco */
+    .field-tree {
+      position: absolute;
+      bottom: 48%;
+      font-size: clamp(28px,4vw,40px);
+      opacity: .7;
+      pointer-events: none;
+    }
+    .field-tree:nth-child(1) { left: 6%; }
+    .field-tree:nth-child(2) { right: 8%; transform: scaleX(-1); }
+
+    /* enemy HP panel (top-left) */
+    .hp-panel {
+      background: white;
+      border: 2.5px solid #333;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-family: 'Press Start 2P', monospace;
+      box-shadow: 3px 3px 0 #888;
+      min-width: clamp(140px, 22vw, 180px);
+      position: absolute;
+    }
+    .hp-panel.enemy { top: 16px; left: 20px; }
+    .hp-panel.player { bottom: 16px; right: 20px; }
+
+    .hp-panel-name {
+      font-size: clamp(6px, 1.1vw, 8px);
+      color: #222;
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hp-row { display: flex; align-items: center; gap: 5px; }
+    .hp-lbl { font-size: clamp(5px, 1vw, 7px); color: #555; }
+    .hp-track {
+      flex: 1; height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid #aaa;
+    }
+    .hp-fill {
+      height: 100%; border-radius: 4px;
+      background: #4caf50;
+      transition: width .6s ease, background .6s ease;
+    }
+    .hp-fill.yellow { background: #FFD700; }
+    .hp-fill.red    { background: #CC0000; }
+    .hp-nums {
+      font-size: clamp(5px, 1vw, 7px);
+      color: #666;
+      text-align: right;
+      margin-top: 3px;
+    }
+
+    /* sprites */
+    .enemy-area {
+      position: absolute;
+      top: 14px; right: clamp(20px, 5vw, 60px);
+      text-align: center;
+    }
+    .enemy-sprite-wrap img {
+      width: clamp(72px, 12vw, 100px);
+      height: clamp(72px, 12vw, 100px);
+      image-rendering: pixelated;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.25));
+      display: block;
+    }
+
+    .player-area {
+      position: absolute;
+      bottom: 48%;
+      left: clamp(16px, 4vw, 50px);
+      text-align: center;
+      transform: translateY(60%);
+    }
+    .player-sprite-wrap img {
+      width: clamp(88px, 15vw, 120px);
+      height: clamp(88px, 15vw, 120px);
+      image-rendering: pixelated;
+      animation: float 3s ease-in-out infinite .6s;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,.3));
+      display: block;
+    }
+
+    /* ── Battle UI ── */
+    .battle-ui {
+      background: #d8d8d8;
+      border-top: 3px solid #888;
+      padding: clamp(12px, 2vw, 18px);
+      background: linear-gradient(180deg, #e0e0e0, #d0d0d0);
+    }
+
+    .dialog-box {
+      background: white;
+      border: 3px solid #333;
+      border-radius: 10px;
+      padding: clamp(10px, 2vw, 16px) clamp(12px, 2vw, 18px);
+      min-height: 72px;
+      margin-bottom: 12px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(8px, 1.3vw, 10px);
+      color: #222;
+      line-height: 1.9;
+      box-shadow: 3px 3px 0 #888, inset 0 1px 0 rgba(255,255,255,.6);
+      position: relative;
+    }
+    .dialog-cursor {
+      display: inline-block;
+      width: 8px; height: 8px;
+      background: #333;
+      animation: blink .7s step-end infinite;
+      margin-left: 3px;
+      vertical-align: middle;
+    }
+
+    .attack-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-attack {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(6px, 1.1vw, 8px);
+      background: white;
+      border: 2.5px solid #333;
+      border-radius: 10px;
+      padding: clamp(8px, 1.5vw, 13px) clamp(8px, 1.5vw, 12px);
+      cursor: pointer;
+      transition: all .15s;
+      text-align: left;
+      box-shadow: 2px 3px 0 #888;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      line-height: 1.4;
+    }
+    .btn-attack:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 2px 5px 0 #888;
+    }
+    .btn-attack:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 1px 1px 0 #888;
+    }
+    .btn-attack:disabled { opacity: .45; cursor: not-allowed; }
+
+    .atk-name { color: #222; }
+    .atk-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .atk-type-pill {
+      font-size: clamp(6px, 1vw, 8px);
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .atk-pp { font-size: clamp(5px, .9vw, 7px); color: #888; }
+
+    /* ══════════════════════════════
+       SCREEN 3 — END
+    ══════════════════════════════ */
+    #screen-end {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(40px, 6vw, 72px) 24px;
+      gap: 20px;
+      min-height: 480px;
+    }
+    #screen-end.victory { background: linear-gradient(160deg, #fffde7, #fff8e1, #fff3e0); }
+    #screen-end.defeat  { background: linear-gradient(160deg, #fce4ec, #ffebee); }
+
+    .end-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(18px, 4vw, 32px);
+      animation: slideInUp .4s ease both;
+      line-height: 1.4;
+    }
+    .victory .end-title { color: #CC0000; text-shadow: 4px 4px 0 #880000; }
+    .defeat  .end-title { color: #555;    text-shadow: 3px 3px 0 #333; }
+
+    .end-msg {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(8px, 1.4vw, 11px);
+      color: #555;
+      line-height: 1.9;
+    }
+
+    .xp-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #FFD700; color: #333;
+      border: 2.5px solid #c8a000;
+      border-radius: 10px; padding: 10px 22px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(8px, 1.4vw, 11px);
+      box-shadow: 0 4px 0 #b8860b;
+    }
+
+    .btn-next {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(8px, 1.4vw, 11px);
+      background: #4FC3F7; color: white;
+      border: none; border-radius: 10px;
+      padding: 14px 28px; cursor: pointer;
+      box-shadow: 0 5px 0 #0288d1;
+      transition: all .15s;
+      text-shadow: 1px 1px 0 #0288d1;
+      line-height: 1.6;
+    }
+    .btn-next:hover { transform: translateY(-3px); box-shadow: 0 8px 0 #0288d1; }
+    .btn-next:active { transform: translateY(3px); box-shadow: 0 2px 0 #0288d1; }
+
+    /* ── TYPE COLORS ── */
+    .t-feu    { background: #ffebe6; color: #c0392b; }
+    .t-eau    { background: #e8f0fc; color: #1a5fb4; }
+    .t-plante { background: #edf7ee; color: #2d6a2d; }
+    .t-elec   { background: #fff8e1; color: #b8860b; }
+    .t-normal { background: #f0f0f0; color: #555; }
+    .t-dragon { background: #ece8ff; color: #4040c0; }
+    .t-psy    { background: #f9ebff; color: #6a1f9e; }
+    .t-sol    { background: #f5f0e0; color: #8b6914; }
+
+    /* ── KEYFRAMES ── */
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-9px); }
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%     { transform: translateX(-9px); }
+      40%     { transform: translateX(9px); }
+      60%     { transform: translateX(-6px); }
+      80%     { transform: translateX(6px); }
+    }
+    @keyframes flash {
+      0%,100% { opacity: 1; filter: none; }
+      30%     { opacity: .1; filter: brightness(8); }
+      60%     { opacity: 1; filter: none; }
+      80%     { opacity: .2; filter: brightness(6); }
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%     { opacity: 0; }
+    }
+    @keyframes slideInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(100px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes confettiFall {
+      0%   { transform: translateY(-30px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+    @keyframes enemyEntrance {
+      from { opacity: 0; transform: translateX(80px) scale(.7); }
+      to   { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
+    .do-shake { animation: shake .45s ease-in-out !important; }
+    .do-flash { animation: flash .45s ease-in-out !important; }
+    .do-entrance { animation: enemyEntrance .5s cubic-bezier(.25,.1,.25,1) both; }
+
+    .confetti-piece {
+      position: fixed;
+      top: -30px;
+      animation: confettiFall linear forwards;
+      z-index: 9999;
+      pointer-events: none;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 480px) {
+      .attack-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .starter-grid { gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="game">
+
+  <!-- HUD -->
+  <div class="hud">
+    <span class="hud-title">⚡ POKÉMON COMBAT</span>
+    <span class="wins-badge">★ Victoires : <span id="wins-count">0</span></span>
+  </div>
+
+  <!-- ═══ SCREEN 1 : SELECTION ═══ -->
+  <div id="screen-select">
+    <div class="pixel-logo">POKÉMON</div>
+    <div class="pixel-sub" style="margin-top:4px;">COMBAT RP</div>
+    <div class="pixel-choose" style="margin-top:16px;">— Choisissez votre Pokémon ! —</div>
+
+    <div class="starter-grid">
+      <div class="starter-card" id="card-bulbasaur" onclick="selectStarter('bulbasaur')">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="Bulbizarre"/>
+        <span class="starter-name">Bulbizarre</span>
+        <span class="atk-type-pill t-plante" style="display:inline-block;margin:4px 0;">🌿 Plante</span>
+        <div class="starter-hp">45 PV</div>
+      </div>
+      <div class="starter-card" id="card-charmander" onclick="selectStarter('charmander')">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png" alt="Salamèche"/>
+        <span class="starter-name">Salamèche</span>
+        <span class="atk-type-pill t-feu" style="display:inline-block;margin:4px 0;">🔥 Feu</span>
+        <div class="starter-hp">39 PV</div>
+      </div>
+      <div class="starter-card" id="card-squirtle" onclick="selectStarter('squirtle')">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png" alt="Carapuce"/>
+        <span class="starter-name">Carapuce</span>
+        <span class="atk-type-pill t-eau" style="display:inline-block;margin:4px 0;">💧 Eau</span>
+        <div class="starter-hp">44 PV</div>
+      </div>
+    </div>
+
+    <button class="btn-start" id="btn-start" onclick="startBattle()" disabled>
+      Partir à l'aventure !
+    </button>
+  </div>
+
+  <!-- ═══ SCREEN 2 : BATTLE ═══ -->
+  <div id="screen-battle">
+    <div class="battle-field">
+      <span class="field-tree">🌲</span>
+      <span class="field-tree">🌲</span>
+
+      <!-- Enemy HP -->
+      <div class="hp-panel enemy" id="enemy-hp-panel">
+        <div class="hp-panel-name" id="enemy-name">???</div>
+        <div class="hp-row">
+          <span class="hp-lbl">PV</span>
+          <div class="hp-track"><div class="hp-fill" id="enemy-hp-fill" style="width:100%"></div></div>
+        </div>
+        <div class="hp-nums" id="enemy-hp-nums"></div>
+      </div>
+
+      <!-- Enemy sprite -->
+      <div class="enemy-area">
+        <div id="enemy-sprite-wrap">
+          <img id="enemy-sprite" src="" alt="Ennemi"/>
+        </div>
+      </div>
+
+      <!-- Player HP -->
+      <div class="hp-panel player" id="player-hp-panel">
+        <div class="hp-panel-name" id="player-name">???</div>
+        <div class="hp-row">
+          <span class="hp-lbl">PV</span>
+          <div class="hp-track"><div class="hp-fill" id="player-hp-fill" style="width:100%"></div></div>
+        </div>
+        <div class="hp-nums" id="player-hp-nums"></div>
+      </div>
+
+      <!-- Player sprite -->
+      <div class="player-area">
+        <div id="player-sprite-wrap">
+          <img id="player-sprite" src="" alt="Joueur"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="battle-ui">
+      <div class="dialog-box">
+        <span id="dialog-text"></span><span id="dialog-cursor" class="dialog-cursor" style="display:none"></span>
+      </div>
+      <div class="attack-grid" id="attack-grid"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 3 : END ═══ -->
+  <div id="screen-end"></div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════
+
+const ATK_DB = {
+  'Tranche':      { power:70,  type:'normal', pp:30, icon:'⚔️' },
+  'Fouet Lianes': { power:45,  type:'plante', pp:25, icon:'🌿' },
+  'Rugissement':  { power:0,   type:'normal', pp:40, icon:'📢', effect:'lower_atk' },
+  'Jackpot':      { power:40,  type:'normal', pp:30, icon:'💰' },
+  'Griffe':       { power:40,  type:'normal', pp:35, icon:'🦅' },
+  'Flammèche':    { power:40,  type:'feu',    pp:25, icon:'🔥' },
+  'Pistolet à O': { power:40,  type:'eau',    pp:25, icon:'💧' },
+  'Charge':       { power:35,  type:'normal', pp:35, icon:'💨' },
+  'Tonnerre':     { power:90,  type:'elec',   pp:15, icon:'⚡' },
+  'Vive-Attaque': { power:40,  type:'normal', pp:30, icon:'💫' },
+  'Éclair':       { power:40,  type:'elec',   pp:30, icon:'⚡' },
+  'Séisma':       { power:100, type:'sol',    pp:10, icon:'🌍' },
+  'Dracoqueue':   { power:90,  type:'dragon', pp:10, icon:'🐉' },
+  'Psyko':        { power:90,  type:'psy',    pp:10, icon:'🔮' },
+};
+
+const PKM_DB = {
+  bulbasaur:  { id:1,   name:'Bulbizarre', maxHp:45,  types:['plante'], attacks:['Tranche','Fouet Lianes','Rugissement','Jackpot'] },
+  charmander: { id:4,   name:'Salamèche',  maxHp:39,  types:['feu'],    attacks:['Griffe','Flammèche','Rugissement','Tranche'] },
+  squirtle:   { id:7,   name:'Carapuce',   maxHp:44,  types:['eau'],    attacks:['Pistolet à O','Charge','Rugissement','Tranche'] },
+  snorlax:    { id:143, name:'Ronflex',    maxHp:160, types:['normal'], attacks:['Jackpot','Séisma','Rugissement','Tranche'] },
+  pikachu:    { id:25,  name:'Pikachu',    maxHp:35,  types:['elec'],   attacks:['Tonnerre','Vive-Attaque','Rugissement','Éclair'] },
+  dragonite:  { id:149, name:'Dracolosse', maxHp:91,  types:['dragon'], attacks:['Dracoqueue','Tranche','Rugissement','Jackpot'] },
+  eevee:      { id:133, name:'Évoli',      maxHp:55,  types:['normal'], attacks:['Charge','Rugissement','Jackpot','Tranche'] },
+  mewtwo:     { id:150, name:'Mewtwo',     maxHp:106, types:['psy'],    attacks:['Psyko','Tranche','Rugissement','Jackpot'] },
+};
+
+const WILD = ['snorlax','pikachu','dragonite','eevee','mewtwo'];
+
+const TYPE_EFF = {
+  feu:    { plante:2, eau:.5, feu:.5, dragon:.5 },
+  eau:    { feu:2, plante:.5, eau:.5 },
+  plante: { eau:2, feu:.5, plante:.5 },
+  elec:   { eau:2, plante:.5, elec:.5 },
+  psy:    { normal:2 },
+  dragon: { dragon:2 },
+  sol:    { elec:2, feu:1 },
+  normal: {},
+};
+
+const TYPE_PILL_CLASS = {
+  feu:'t-feu', eau:'t-eau', plante:'t-plante',
+  elec:'t-elec', normal:'t-normal', dragon:'t-dragon',
+  psy:'t-psy', sol:'t-sol',
+};
+
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
+
+const S = {
+  screen: 'select',
+  starter: null,
+  player: null,
+  enemy: null,
+  pAtks: [],
+  eAtks: [],
+  wins: 0,
+  busy: false,
+  dlgQ: [],
+  dlgRunning: false,
+};
+
+// ═══════════════════════════════════════
+//  AUDIO
+// ═══════════════════════════════════════
+
+let _ctx = null;
+const audio = () => { if (!_ctx) _ctx = new (window.AudioContext||window.webkitAudioContext)(); return _ctx; };
+
+function tone(freq, dur, type='square', vol=0.13, delay=0) {
+  try {
+    const c = audio(), o = c.createOscillator(), g = c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.type = type; o.frequency.value = freq;
+    const t = c.currentTime + delay;
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    o.start(t); o.stop(t + dur + .05);
+  } catch(e) {}
+}
+
+const sfx = {
+  select:  () => { tone(880,.06); },
+  attack:  () => { tone(440,.08); tone(660,.08,'square',.12,.09); },
+  hit:     () => { tone(180,.12); tone(120,.15,'square',.14,.08); },
+  super:   () => { tone(660,.07); tone(880,.07,'square',.12,.08); tone(1100,.1,'square',.12,.16); },
+  miss:    () => { tone(200,.1,'sine',.08); },
+  victory: () => { [523,659,784,1047,784,1047].forEach((n,i) => tone(n,.15,'square',.12,i*.16)); },
+  defeat:  () => { [300,250,200,150].forEach((n,i) => tone(n,.22,'square',.13,i*.24)); },
+};
+
+// ═══════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════
+
+const $id = id => document.getElementById(id);
+
+function spriteUrl(id, back=false) {
+  return back
+    ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/${id}.png`
+    : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+}
+
+function cloneAtks(names) {
+  return names.map(n => ({ ...ATK_DB[n], name: n, maxPp: ATK_DB[n].pp }));
+}
+
+function showScreen(name) {
+  S.screen = name;
+  $id('screen-select').style.display = name==='select' ? 'flex' : 'none';
+  const b = $id('screen-battle');
+  b.style.display = name==='battle' ? 'flex' : 'none';
+  if (name==='battle') b.style.flexDirection = 'column';
+  $id('screen-end').style.display = name==='end' ? 'flex' : 'none';
+}
+
+function updateHpBar(who, hp, maxHp) {
+  const pct = Math.max(0, (hp/maxHp)*100);
+  const fill = $id(who+'-hp-fill');
+  fill.style.width = pct+'%';
+  fill.className = 'hp-fill' + (pct<=25?' red':pct<=50?' yellow':'');
+  $id(who+'-hp-nums').textContent = `${Math.max(0,hp)} / ${maxHp}`;
+}
+
+function animateSprite(id, cls) {
+  const el = $id(id);
+  if (!el) return;
+  el.classList.remove(cls);
+  void el.offsetWidth;
+  el.classList.add(cls);
+  setTimeout(() => el.classList.remove(cls), 500);
+}
+
+// ═══════════════════════════════════════
+//  DIALOG
+// ═══════════════════════════════════════
+
+function dlg(text, cb=null) {
+  S.dlgQ.push({ text, cb });
+  if (!S.dlgRunning) nextDlg();
+}
+
+function nextDlg() {
+  if (!S.dlgQ.length) { S.dlgRunning=false; return; }
+  S.dlgRunning = true;
+  const { text, cb } = S.dlgQ.shift();
+  const el = $id('dialog-text');
+  const cur = $id('dialog-cursor');
+  el.textContent = '';
+  cur.style.display = 'none';
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i < text.length) { el.textContent += text[i++]; }
+    else {
+      clearInterval(iv);
+      cur.style.display = 'inline-block';
+      setTimeout(() => {
+        cur.style.display = 'none';
+        if (cb) cb();
+        nextDlg();
+      }, cb ? 700 : 900);
+    }
+  }, 26);
+}
+
+// ═══════════════════════════════════════
+//  SELECT STARTER
+// ═══════════════════════════════════════
+
+function selectStarter(key) {
+  sfx.select();
+  S.starter = key;
+  document.querySelectorAll('.starter-card').forEach(c=>c.classList.remove('selected'));
+  $id('card-'+key).classList.add('selected');
+  $id('btn-start').disabled = false;
+}
+
+// ═══════════════════════════════════════
+//  BATTLE INIT
+// ═══════════════════════════════════════
+
+function pickEnemy() {
+  return WILD[Math.floor(Math.random()*WILD.length)];
+}
+
+function startBattle() {
+  const pb = PKM_DB[S.starter];
+  const ek = pickEnemy();
+  const eb = PKM_DB[ek];
+  S.player = { ...pb, hp: pb.maxHp, atkMod: 1 };
+  S.enemy  = { ...eb, hp: eb.maxHp, atkMod: 1 };
+  S.pAtks  = cloneAtks(pb.attacks);
+  S.eAtks  = cloneAtks(eb.attacks);
+  S.busy   = false;
+  S.dlgQ   = [];
+  S.dlgRunning = false;
+  showScreen('battle');
+  renderBattle();
+  animateSprite('enemy-sprite-wrap','do-entrance');
+  dlg(`Un ${S.enemy.name} sauvage apparaît !`);
+}
+
+function nextEnemy() {
+  const ek = pickEnemy();
+  const eb = PKM_DB[ek];
+  const heal = Math.floor(S.player.maxHp * .35);
+  S.player.hp = Math.min(S.player.maxHp, S.player.hp + heal);
+  S.player.atkMod = 1;
+  S.enemy  = { ...eb, hp: eb.maxHp, atkMod: 1 };
+  S.pAtks  = cloneAtks(PKM_DB[S.starter].attacks);
+  S.eAtks  = cloneAtks(eb.attacks);
+  S.busy   = false;
+  S.dlgQ   = [];
+  S.dlgRunning = false;
+  showScreen('battle');
+  renderBattle();
+  animateSprite('enemy-sprite-wrap','do-entrance');
+  dlg(`Un ${S.enemy.name} sauvage apparaît !`);
+}
+
+// ═══════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════
+
+function renderBattle() {
+  $id('player-sprite').src = spriteUrl(S.player.id, true);
+  $id('enemy-sprite').src  = spriteUrl(S.enemy.id, false);
+  $id('player-name').textContent = S.player.name;
+  $id('enemy-name').textContent  = S.enemy.name;
+  updateHpBar('player', S.player.hp, S.player.maxHp);
+  updateHpBar('enemy',  S.enemy.hp,  S.enemy.maxHp);
+  renderAtks();
+  $id('wins-count').textContent = S.wins;
+}
+
+function renderAtks() {
+  const grid = $id('attack-grid');
+  grid.innerHTML = '';
+  S.pAtks.forEach((atk, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-attack';
+    const pc = TYPE_PILL_CLASS[atk.type] || 't-normal';
+    btn.innerHTML = `
+      <span class="atk-name">${atk.icon} ${atk.name}</span>
+      <div class="atk-meta">
+        <span class="atk-type-pill ${pc}">${atk.type.toUpperCase()}</span>
+        <span class="atk-pp">PP ${atk.pp}/${atk.maxPp}</span>
+      </div>`;
+    btn.disabled = atk.pp<=0 || S.busy;
+    btn.onclick = () => playerAttack(i);
+    grid.appendChild(btn);
+  });
+}
+
+function lockAtks(v) { document.querySelectorAll('.btn-attack').forEach(b=>b.disabled=v); }
+
+// ═══════════════════════════════════════
+//  DAMAGE CALC
+// ═══════════════════════════════════════
+
+function calcDmg(atk, defTypes, atkMod) {
+  if (!atk.power) return { dmg:0, eff:1, msg:'' };
+  let eff = 1;
+  defTypes.forEach(dt => { const chart=TYPE_EFF[atk.type]||{}; if(chart[dt]!==undefined) eff*=chart[dt]; });
+  const dmg = Math.max(1, Math.floor(atk.power * atkMod * (0.8+Math.random()*.4) * eff * .42));
+  const msg = eff>=2 ? "C'est super efficace !" : eff<=.5 ? "Ce n'est pas très efficace..." : '';
+  return { dmg, eff, msg };
+}
+
+// ═══════════════════════════════════════
+//  PLAYER TURN
+// ═══════════════════════════════════════
+
+function playerAttack(idx) {
+  if (S.busy) return;
+  S.busy = true;
+  lockAtks(true);
+  const atk = S.pAtks[idx];
+  atk.pp = Math.max(0, atk.pp-1);
+  sfx.attack();
+  const { dmg, eff, msg } = calcDmg(atk, S.enemy.types, S.player.atkMod);
+
+  dlg(`${S.player.name} utilise ${atk.name} !`, () => {
+    if (atk.power) {
+      setTimeout(() => {
+        eff>=2 ? sfx.super() : sfx.hit();
+        animateSprite('enemy-sprite-wrap','do-shake');
+        animateSprite('enemy-sprite','do-flash');
+        S.enemy.hp -= dmg;
+        updateHpBar('enemy', S.enemy.hp, S.enemy.maxHp);
+        if (atk.effect==='lower_atk') S.enemy.atkMod = Math.max(.5, S.enemy.atkMod*.75);
+        const msgs = [];
+        if (msg) msgs.push(msg);
+        if (atk.effect==='lower_atk') msgs.push(`L'attaque de ${S.enemy.name} baisse !`);
+        const afterMsgs = () => checkPlayerResult();
+        if (msgs.length) {
+          msgs.forEach((m, i) => dlg(m, i===msgs.length-1 ? afterMsgs : null));
+        } else {
+          afterMsgs();
+        }
+      }, 300);
+    } else {
+      if (atk.effect==='lower_atk') { S.enemy.atkMod = Math.max(.5, S.enemy.atkMod*.75); dlg(`L'attaque de ${S.enemy.name} baisse !`, checkPlayerResult); }
+      else checkPlayerResult();
+    }
+  });
+}
+
+function checkPlayerResult() {
+  if (S.enemy.hp<=0) {
+    S.enemy.hp=0; updateHpBar('enemy',0,S.enemy.maxHp);
+    S.wins++;
+    sfx.victory();
+    dlg(`${S.enemy.name} ennemi est K.O. !`, showVictory);
+  } else {
+    setTimeout(enemyTurn, 500);
+  }
+}
+
+// ═══════════════════════════════════════
+//  ENEMY TURN
+// ═══════════════════════════════════════
+
+function enemyTurn() {
+  const avail = S.eAtks.filter(a=>a.pp>0);
+  if (!avail.length) { dlg(`${S.enemy.name} n'a plus de PP !`, () => { S.busy=false; renderAtks(); }); return; }
+  const atk = avail[Math.floor(Math.random()*avail.length)];
+  atk.pp = Math.max(0, atk.pp-1);
+  sfx.attack();
+  const { dmg, eff, msg } = calcDmg(atk, S.player.types, S.enemy.atkMod);
+
+  dlg(`${S.enemy.name} utilise ${atk.name} !`, () => {
+    if (atk.power) {
+      setTimeout(() => {
+        sfx.hit();
+        animateSprite('player-sprite-wrap','do-shake');
+        animateSprite('player-sprite','do-flash');
+        S.player.hp -= dmg;
+        updateHpBar('player', S.player.hp, S.player.maxHp);
+        if (atk.effect==='lower_atk') S.player.atkMod = Math.max(.5, S.player.atkMod*.75);
+        const msgs = [];
+        if (msg) msgs.push(msg);
+        if (atk.effect==='lower_atk') msgs.push(`L'attaque de ${S.player.name} baisse !`);
+        const afterMsgs = () => checkEnemyResult();
+        if (msgs.length) msgs.forEach((m,i) => dlg(m, i===msgs.length-1 ? afterMsgs : null));
+        else afterMsgs();
+      }, 300);
+    } else {
+      if (atk.effect==='lower_atk') { S.player.atkMod = Math.max(.5, S.player.atkMod*.75); dlg(`L'attaque de ${S.player.name} baisse !`, checkEnemyResult); }
+      else checkEnemyResult();
+    }
+  });
+}
+
+function checkEnemyResult() {
+  if (S.player.hp<=0) {
+    S.player.hp=0; updateHpBar('player',0,S.player.maxHp);
+    sfx.defeat();
+    dlg(`${S.player.name} est K.O. !`, showDefeat);
+  } else {
+    S.busy=false;
+    renderAtks();
+  }
+}
+
+// ═══════════════════════════════════════
+//  END SCREENS
+// ═══════════════════════════════════════
+
+function showVictory() {
+  const xp = Math.floor(S.enemy.maxHp*1.6 + 20);
+  const el = $id('screen-end');
+  el.className = 'victory';
+  el.style.display = 'flex';
+  el.innerHTML = `
+    <div class="end-title">🏆 Victoire !</div>
+    <img src="${spriteUrl(S.enemy.id)}" style="width:96px;height:96px;image-rendering:pixelated;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 6px 16px rgba(0,0,0,.2))"/>
+    <div class="end-msg">${S.enemy.name} sauvage vaincu !</div>
+    <div class="xp-badge">✨ +${xp} XP gagnée !</div>
+    <div class="wins-badge" style="font-size:clamp(8px,1.4vw,11px);padding:8px 18px;">★ ${S.wins} victoire${S.wins>1?'s':''} consécutive${S.wins>1?'s':''}</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
+      <button class="btn-next" onclick="nextEnemy()">Prochain combat →</button>
+      <button class="btn-next" style="background:#66BB6A;box-shadow:0 5px 0 #388e3c;" onclick="resetGame()">Menu principal</button>
+    </div>`;
+  showScreen('end');
+  $id('wins-count').textContent = S.wins;
+  confetti();
+}
+
+function showDefeat() {
+  const el = $id('screen-end');
+  el.className = 'defeat';
+  el.style.display = 'flex';
+  el.innerHTML = `
+    <div class="end-title" style="color:#555;text-shadow:3px 3px 0 #333;">💀 Défaite...</div>
+    <img src="${spriteUrl(S.player.id,true)}" style="width:96px;height:96px;image-rendering:pixelated;opacity:.45;filter:grayscale(1) drop-shadow(0 4px 10px rgba(0,0,0,.2))"/>
+    <div class="end-msg">Vous avez perdu tous vos PV...</div>
+    <div class="end-msg" style="font-size:clamp(7px,1.2vw,9px);color:#aaa;margin-top:-8px;">Victoires : ${S.wins}</div>
+    <button class="btn-next" style="background:#CC0000;box-shadow:0 5px 0 #880000;margin-top:8px;" onclick="resetGame()">Recommencer !</button>`;
+  showScreen('end');
+  S.wins = 0;
+  $id('wins-count').textContent = 0;
+}
+
+function resetGame() {
+  S.starter=null; S.dlgQ=[]; S.dlgRunning=false; S.wins=0;
+  document.querySelectorAll('.starter-card').forEach(c=>c.classList.remove('selected'));
+  $id('btn-start').disabled=true;
+  $id('dialog-text').textContent='';
+  $id('wins-count').textContent=0;
+  showScreen('select');
+}
+
+// ═══════════════════════════════════════
+//  CONFETTI
+// ═══════════════════════════════════════
+
+function confetti() {
+  const cols = ['#CC0000','#FFD700','#4FC3F7','#66BB6A','#FF69B4','#FF7043','#AB47BC'];
+  for (let i=0; i<70; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.cssText = `
+        left:${Math.random()*100}vw;
+        width:${6+Math.random()*8}px;
+        height:${5+Math.random()*8}px;
+        background:${cols[Math.floor(Math.random()*cols.length)]};
+        border-radius:${Math.random()>.4?'50%':'2px'};
+        animation-duration:${2+Math.random()*2.5}s;
+      `;
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(), 5000);
+    }, i*35);
+  }
+}
+
+// ═══════════════════════════════════════
+//  PUBLIC API
+// ═══════════════════════════════════════
+
+window.render_game_to_text = () => JSON.stringify({
+  screen: S.screen,
+  wins: S.wins,
+  player: S.player ? { name:S.player.name, hp:S.player.hp, maxHp:S.player.maxHp, types:S.player.types } : null,
+  enemy:  S.enemy  ? { name:S.enemy.name,  hp:S.enemy.hp,  maxHp:S.enemy.maxHp,  types:S.enemy.types  } : null,
+}, null, 2);
+
+// Init
+showScreen('select');
+</script>
+</body>
+</html>

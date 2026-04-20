@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lee – Candidature Animateur</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #f7f6f2;
+      --surface:   #ffffff;
+      --border:    #e8e5df;
+      --text:      #1c1c1e;
+      --muted:     #6e6e73;
+      --faint:     #c7c7cc;
+
+      --red:       #e63030;
+      --red-soft:  #fff0f0;
+      --red-mid:   #f5c2c2;
+      --blue:      #3a7bd5;
+      --blue-soft: #e8f0fc;
+      --gold:      #c9921a;
+      --gold-soft: #fdf3dc;
+      --green:     #2d7a3a;
+      --green-soft:#edf7ee;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+
+      --shadow-sm: 0 1px 4px rgba(0,0,0,.06), 0 2px 12px rgba(0,0,0,.04);
+      --shadow-md: 0 4px 20px rgba(0,0,0,.09), 0 1px 4px rgba(0,0,0,.05);
+      --shadow-lg: 0 10px 48px rgba(0,0,0,.13);
+
+      --font-body:    'DM Sans', system-ui, sans-serif;
+      --font-display: 'DM Serif Display', Georgia, serif;
+
+      --ease: cubic-bezier(.25, .1, .25, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(247,246,242,.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+    }
+    .nav-inner {
+      max-width: 1100px; width: 100%; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: .6rem;
+      text-decoration: none; font-weight: 700; font-size: 1.05rem;
+      color: var(--text); letter-spacing: -.02em;
+    }
+    .pokeball {
+      --size: 28px;
+      width: var(--size); height: var(--size);
+      border-radius: 50%;
+      background: linear-gradient(180deg, var(--red) 50%, #fff 50%);
+      border: 2px solid var(--text);
+      position: relative; flex-shrink: 0;
+    }
+    .pokeball::before {
+      content: '';
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      width: calc(var(--size) * .28); height: calc(var(--size) * .28);
+      border-radius: 50%;
+      background: #fff; border: 2px solid var(--text);
+      z-index: 1;
+    }
+    .pokeball::after {
+      content: '';
+      position: absolute;
+      left: -2px; right: -2px;
+      top: calc(50% - 1px); height: 2px;
+      background: var(--text);
+    }
+    .pokeball.sm { --size: 22px; }
+    .pokeball.lg { --size: 40px; }
+    .pokeball.xl { --size: 60px; }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: .9rem; font-weight: 500;
+      transition: color .2s var(--ease);
+    }
+    .nav-links a:hover { color: var(--text); }
+    @media (max-width: 600px) { .nav-links { display: none; } }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100dvh;
+      padding: 7rem 2rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; padding-top: 6rem; }
+      .hero-visual { display: none; }
+    }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--red-soft); border: 1px solid var(--red-mid);
+      color: var(--red);
+      font-size: .75rem; font-weight: 700;
+      letter-spacing: .05em; text-transform: uppercase;
+      padding: .3rem .85rem; border-radius: 999px;
+      margin-bottom: 1.5rem;
+      animation: fadeUp .6s var(--ease) both;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 2rem + 3.5vw, 5rem);
+      line-height: 1.05; letter-spacing: -.03em;
+      margin-bottom: 1.25rem;
+      animation: fadeUp .6s var(--ease) .1s both;
+    }
+    .hero h1 em { font-style: italic; color: var(--red); }
+
+    .hero-sub {
+      font-size: 1.1rem; color: var(--muted); max-width: 44ch;
+      margin-bottom: 2.25rem; font-weight: 400;
+      animation: fadeUp .6s var(--ease) .2s both;
+    }
+    .hero-cta {
+      display: flex; gap: .875rem; flex-wrap: wrap;
+      animation: fadeUp .6s var(--ease) .3s both;
+    }
+
+    /* ── HERO VISUAL ── */
+    .hero-visual {
+      display: flex; align-items: center; justify-content: center;
+      position: relative; height: 420px;
+      animation: fadeUp .8s var(--ease) .2s both;
+    }
+    .hero-pokeball-big {
+      --size: 260px;
+      width: var(--size); height: var(--size);
+      border-radius: 50%;
+      background: linear-gradient(180deg, var(--red) 50%, #fff 50%);
+      border: 4px solid var(--text);
+      position: relative;
+      box-shadow: var(--shadow-lg);
+      animation: spin-slow 20s linear infinite;
+    }
+    .hero-pokeball-big::before {
+      content: '';
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: #fff; border: 4px solid var(--text);
+      z-index: 2;
+    }
+    .hero-pokeball-big::after {
+      content: '';
+      position: absolute; left: -4px; right: -4px;
+      top: calc(50% - 2px); height: 4px;
+      background: var(--text); z-index: 1;
+    }
+    .hero-pokeball-big .inner-dot {
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg,#eee,#ccc);
+      border: 3px solid #888;
+      z-index: 3;
+    }
+
+    /* floating orbs around pokeball */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      animation: orbit linear infinite;
+      box-shadow: var(--shadow-sm);
+    }
+    .orb-1 { width:52px;height:52px;background:#fff0f0;border:1.5px solid var(--red-mid);top:40px;right:20px;animation-duration:12s;animation-delay:0s; }
+    .orb-2 { width:44px;height:44px;background:#e8f0fc;border:1.5px solid #c2d4f5;bottom:80px;right:10px;animation-duration:15s;animation-delay:-3s; }
+    .orb-3 { width:48px;height:48px;background:#edf7ee;border:1.5px solid #b8e4bc;bottom:60px;left:20px;animation-duration:18s;animation-delay:-7s; }
+    .orb-4 { width:40px;height:40px;background:#fdf3dc;border:1.5px solid #f0d9a0;top:60px;left:30px;animation-duration:14s;animation-delay:-5s; }
+
+    /* type badges floating */
+    .floating-type {
+      position: absolute;
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .3rem .7rem; border-radius: 999px;
+      font-size: .7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+      box-shadow: var(--shadow-sm);
+      animation: float-soft ease-in-out infinite;
+    }
+    .ft-fire  { background:#ffebe6;color:#c0392b;top:30px;left:50%;transform:translateX(-50%);animation-duration:4s; }
+    .ft-water { background:var(--blue-soft);color:#1a5fb4;bottom:30px;left:50%;transform:translateX(-50%);animation-duration:5s;animation-delay:-1s; }
+
+    @keyframes spin-slow { to { transform: rotate(360deg); } }
+    @keyframes float-soft {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(-8px); }
+    }
+    @keyframes orbit {
+      0%   { transform: translateY(0) scale(1); }
+      25%  { transform: translateY(-10px) scale(1.05); }
+      50%  { transform: translateY(0) scale(1); }
+      75%  { transform: translateY(10px) scale(.95); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .75rem 1.75rem; border-radius: var(--radius-md);
+      font-family: var(--font-body); font-size: .9rem; font-weight: 600;
+      cursor: pointer; text-decoration: none; border: none;
+      transition: all .2s var(--ease);
+    }
+    .btn-primary { background: var(--text); color: #fff; box-shadow: var(--shadow-md); }
+    .btn-primary:hover { background: #333; transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .btn-ghost { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--text); transform: translateY(-2px); }
+
+    /* ── SECTIONS ── */
+    .section { padding: 5rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    .eyebrow {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: var(--red); margin-bottom: .75rem;
+    }
+    .eyebrow::before {
+      content: ''; width: 18px; height: 2px;
+      background: var(--red); border-radius: 2px; display: inline-block;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.9rem,1.3rem + 2vw,2.8rem);
+      line-height: 1.1; letter-spacing: -.02em; margin-bottom: .75rem;
+    }
+    .section-desc { font-size: 1.05rem; color: var(--muted); max-width: 52ch; }
+
+    /* ── STATS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-radius: var(--radius-lg);
+      overflow: hidden; margin-top: 3rem;
+    }
+    .stat-item {
+      background: var(--surface); padding: 2.5rem 1.75rem;
+      text-align: center; transition: background .2s var(--ease);
+    }
+    .stat-item:hover { background: var(--bg); }
+    .stat-icon { font-size: 1.75rem; margin-bottom: .75rem; }
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem,1.5rem + 2.5vw,3.8rem);
+      line-height: 1; color: var(--text); margin-bottom: .4rem;
+    }
+    .stat-label {
+      font-size: .78rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+
+    /* ── ABOUT SPLIT ── */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center; margin-top: 3rem;
+    }
+    @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+    .about-text p {
+      color: var(--muted); font-size: 1.05rem; line-height: 1.8;
+      margin-bottom: 1.25rem;
+    }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-text strong { color: var(--text); }
+
+    .about-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius-xl); padding: 2rem;
+      display: flex; flex-direction: column; gap: 1.25rem;
+    }
+    .about-card-header {
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .trainer-card-ball { --size: 48px; }
+
+    .trainer-info { flex: 1; }
+    .trainer-name {
+      font-family: var(--font-display); font-size: 1.3rem;
+      letter-spacing: -.01em; margin-bottom: .1rem;
+    }
+    .trainer-role { font-size: .82rem; color: var(--muted); font-weight: 500; }
+
+    .trainer-types {
+      display: flex; flex-wrap: wrap; gap: .4rem;
+    }
+    .type-tag {
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .25rem .7rem; border-radius: 999px;
+      font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .t-feu    { background: #ffebe6; color: #c0392b; }
+    .t-eau    { background: var(--blue-soft); color: #1a5fb4; }
+    .t-normal { background: #f0f0f0; color: #555; }
+    .t-psy    { background: #f9ebff; color: #6a1f9e; }
+    .t-elec   { background: #fff8e1; color: #b8860b; }
+    .t-plante { background: #edf7ee; color: #2d6a2d; }
+
+    .trainer-divider { height: 1px; background: var(--border); }
+
+    .trainer-stats {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: .75rem;
+    }
+    .ts-item { text-align: center; }
+    .ts-num {
+      font-family: var(--font-display); font-size: 1.5rem;
+      color: var(--text); line-height: 1;
+    }
+    .ts-label { font-size: .7rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-top: .2rem; }
+
+    /* ── TYPE BADGES SECTION ── */
+    .types-section {
+      padding: 0 2rem 5rem;
+    }
+    .types-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: .75rem; margin-top: 2.5rem;
+    }
+    .type-pill {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius-md); padding: 1.25rem 1rem;
+      text-align: center; transition: all .2s var(--ease);
+      cursor: default;
+    }
+    .type-pill:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .type-pill-icon { font-size: 1.75rem; margin-bottom: .5rem; }
+    .type-pill-name {
+      font-size: .75rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--muted);
+    }
+    .type-pill.feu   { border-color: #f5c2c2; } .type-pill.feu:hover   { background: #fff5f5; }
+    .type-pill.eau   { border-color: #c2d4f5; } .type-pill.eau:hover   { background: #f0f5ff; }
+    .type-pill.plante{ border-color: #b8e4bc; } .type-pill.plante:hover{ background: #f2faf2; }
+    .type-pill.elec  { border-color: #f0d9a0; } .type-pill.elec:hover  { background: #fffbf0; }
+    .type-pill.psy   { border-color: #d9b8f5; } .type-pill.psy:hover   { background: #faf0ff; }
+    .type-pill.glace { border-color: #b8e4e4; } .type-pill.glace:hover { background: #f0fbfb; }
+    .type-pill.dragon{ border-color: #b8b8f5; } .type-pill.dragon:hover{ background: #f0f0ff; }
+    .type-pill.sol   { border-color: #e4d4b8; } .type-pill.sol:hover   { background: #fdfaf5; }
+
+    /* ── CARDS ── */
+    .cards-section { padding: 0 2rem 5rem; }
+    .cards-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+      gap: 1.25rem; margin-top: 3rem;
+    }
+    .card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 2rem;
+      text-decoration: none; color: var(--text);
+      display: flex; flex-direction: column; gap: 1rem;
+      transition: all .25s var(--ease); position: relative; overflow: hidden;
+    }
+    .card:hover { border-color: var(--text); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+    .card-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 1rem;
+    }
+    .card-badge {
+      width: 50px; height: 50px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; flex-shrink: 0;
+    }
+    .cb-red    { background: var(--red-soft); }
+    .cb-blue   { background: var(--blue-soft); }
+    .cb-gold   { background: var(--gold-soft); }
+    .cb-green  { background: var(--green-soft); }
+    .cb-purple { background: #f4eefb; }
+    .cb-teal   { background: #e6f7f7; }
+
+    .card h3 {
+      font-family: var(--font-display); font-size: 1.3rem;
+      letter-spacing: -.01em; line-height: 1.2;
+    }
+    .card p { font-size: .9rem; color: var(--muted); line-height: 1.7; flex: 1; }
+    .card-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: .75rem; border-top: 1px solid var(--border); margin-top: .25rem;
+    }
+    .card-link {
+      font-size: .82rem; font-weight: 600; color: var(--text);
+      display: flex; align-items: center; gap: .3rem;
+    }
+    .card-link svg { transition: transform .2s var(--ease); }
+    .card:hover .card-link svg { transform: translateX(4px); }
+
+    /* ── TIMELINE / EXPERIENCES ── */
+    .xp-section { padding: 0 2rem 5rem; }
+    .xp-list { margin-top: 3rem; display: flex; flex-direction: column; gap: 0; }
+    .xp-item {
+      display: grid; grid-template-columns: 32px 1fr;
+      gap: 1.5rem; position: relative;
+    }
+    .xp-item + .xp-item { margin-top: 0; }
+    .xp-line {
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .xp-dot {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem; flex-shrink: 0; z-index: 1;
+      transition: border-color .2s var(--ease);
+    }
+    .xp-item:hover .xp-dot { border-color: var(--red); }
+    .xp-connector {
+      flex: 1; width: 1.5px; background: var(--border);
+      margin: 4px 0;
+    }
+    .xp-item:last-child .xp-connector { display: none; }
+    .xp-body {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.5rem 1.75rem;
+      margin-bottom: 1rem;
+      transition: all .2s var(--ease);
+    }
+    .xp-item:hover .xp-body { border-color: var(--border); box-shadow: var(--shadow-sm); }
+    .xp-meta {
+      display: flex; align-items: center; gap: .6rem;
+      flex-wrap: wrap; margin-bottom: .5rem;
+    }
+    .xp-role {
+      font-family: var(--font-display); font-size: 1.1rem; letter-spacing: -.01em;
+    }
+    .xp-server { font-size: .82rem; color: var(--muted); font-weight: 500; }
+    .xp-desc { font-size: .9rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── CTA BAND ── */
+    .cta-section { padding: 0 2rem 5rem; }
+    .cta-inner {
+      background: var(--text); border-radius: var(--radius-xl);
+      padding: 4rem 3rem;
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 2rem; flex-wrap: wrap;
+      position: relative; overflow: hidden;
+    }
+    .cta-deco {
+      position: absolute; right: -80px; top: -80px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(230,48,48,.15) 50%, rgba(255,255,255,.05) 50%);
+      border: 2px solid rgba(255,255,255,.06); pointer-events: none;
+    }
+    .cta-deco::before {
+      content: '';
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      width: 80px; height: 80px; border-radius: 50%;
+      background: rgba(255,255,255,.04); border: 2px solid rgba(255,255,255,.06);
+    }
+    .cta-deco::after {
+      content: '';
+      position: absolute; left: -10px; right: -10px;
+      top: 50%; height: 2px; background: rgba(255,255,255,.05);
+    }
+    .cta-deco-2 {
+      position: absolute; left: -60px; bottom: -60px;
+      width: 200px; height: 200px; border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,.04); pointer-events: none;
+    }
+    .cta-text h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem,1.2rem + 2vw,2.8rem);
+      color: #fff; letter-spacing: -.02em; margin-bottom: .75rem;
+    }
+    .cta-text p { color: rgba(255,255,255,.55); font-size: 1rem; max-width: 44ch; }
+    .btn-light {
+      background: #fff; color: var(--text);
+      padding: .9rem 2rem; border-radius: var(--radius-md);
+      font-weight: 700; font-size: .95rem;
+      text-decoration: none; flex-shrink: 0;
+      transition: all .2s var(--ease);
+      box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    }
+    .btn-light:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,.3); }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 3rem 2rem; }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: .6rem;
+      text-decoration: none; font-weight: 700; color: var(--text);
+      font-size: .95rem;
+    }
+    .footer-links { display: flex; gap: 2rem; list-style: none; }
+    .footer-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: .875rem; font-weight: 500;
+      transition: color .2s var(--ease);
+    }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy { font-size: .8rem; color: var(--faint); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeUp .7s var(--ease) both; }
+    .fade-in-1 { animation: fadeUp .7s var(--ease) .1s both; }
+    .fade-in-2 { animation: fadeUp .7s var(--ease) .2s both; }
+    .fade-in-3 { animation: fadeUp .7s var(--ease) .3s both; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <div class="pokeball"></div>
+        Lee
+      </a>
+      <ul class="nav-links">
+        <li><a href="#apropos">À propos</a></li>
+        <li><a href="#candidature">Sections</a></li>
+        <li><a href="candidature.html">Candidature complète</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div style="max-width:1100px;margin:0 auto;padding:0 2rem;">
+    <header class="hero" style="padding-left:0;padding-right:0;max-width:100%;">
+      <div class="hero-text">
+        <div class="hero-tag">
+          <svg width="9" height="9" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4.5" stroke="currentColor"/><line x1=".5" y1="5" x2="9.5" y2="5" stroke="currentColor"/><circle cx="5" cy="5" r="1.8" fill="currentColor"/></svg>
+          ALD PokémonRP · Animateur
+        </div>
+        <h1>Candidature<br/><em>Animateur</em></h1>
+        <p class="hero-sub">
+          Je m'appelle Lee, j'ai 19 ans et je veux apporter mes idées, mon énergie et mon expérience au serveur ALD PokémonRP.
+        </p>
+        <div class="hero-cta">
+          <a href="candidature.html" class="btn btn-primary">
+            Voir la candidature
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#apropos" class="btn btn-ghost">En savoir plus</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="floating-type ft-fire">🔥 Feu</div>
+        <div class="floating-type ft-water">💧 Eau</div>
+        <div class="hero-pokeball-big">
+          <div class="inner-dot"></div>
+        </div>
+        <div class="orb orb-1">⚡</div>
+        <div class="orb orb-2">🌿</div>
+        <div class="orb orb-3">🔮</div>
+        <div class="orb orb-4">⭐</div>
+      </div>
+    </header>
+  </div>
+
+  <!-- STATS -->
+  <section class="section" id="apropos">
+    <div class="container">
+      <div class="eyebrow">Profil</div>
+      <h2 class="section-title">En chiffres</h2>
+      <p class="section-desc">Un aperçu rapide de mon parcours dans l'univers du RP et de GMod.</p>
+      <div class="stats-grid fade-in">
+        <div class="stat-item">
+          <div class="stat-icon">🎂</div>
+          <div class="stat-number">19</div>
+          <div class="stat-label">Ans</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">🗺️</div>
+          <div class="stat-number">15+</div>
+          <div class="stat-label">Serveurs RP</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">🎮</div>
+          <div class="stat-number">4.9k</div>
+          <div class="stat-label">Heures GMod</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">🏅</div>
+          <div class="stat-number">7</div>
+          <div class="stat-label">Postes Staff</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section" style="padding-top:0;">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text">
+          <div class="eyebrow">À propos</div>
+          <h2 class="section-title">Qui suis-je ?</h2>
+          <p>
+            Passionné de Pokémon depuis mon enfance et joueur de RP sérieux depuis plusieurs années, je cherche à mettre mes compétences au service d'une communauté solide comme ALD PokémonRP.
+          </p>
+          <p>
+            J'ai occupé <strong>des rôles de staff</strong> sur plusieurs serveurs  modération, animation, création d'événements. Je sais travailler en équipe, garder mon calme en situation tendue et surtout <strong>faire vivre des moments mémorables aux joueurs</strong>.
+          </p>
+          <p>
+            Mon objectif : devenir animateur pour concevoir des événements RP qui donnent envie de revenir chaque semaine.
+          </p>
+        </div>
+
+        <!-- Trainer card -->
+        <div class="about-card fade-in-1">
+          <div class="about-card-header">
+            <div class="pokeball xl trainer-card-ball"></div>
+            <div class="trainer-info">
+              <div class="trainer-name">Lee</div>
+              <div class="trainer-role">Dresseur · Candidat Animateur</div>
+            </div>
+          </div>
+          <div class="trainer-types">
+            <span class="type-tag t-feu">🔥 Feu</span>
+            <span class="type-tag t-psy">🔮 Psy</span>
+            <span class="type-tag t-normal">⭐ Normal</span>
+          </div>
+          <div class="trainer-divider"></div>
+          <div class="trainer-stats">
+            <div class="ts-item">
+              <div class="ts-num">7+</div>
+              <div class="ts-label">Serveurs</div>
+            </div>
+            <div class="ts-item">
+              <div class="ts-num">4.9k</div>
+              <div class="ts-label">Heures</div>
+            </div>
+            <div class="ts-item">
+              <div class="ts-num">2</div>
+              <div class="ts-label">Staff</div>
+            </div>
+          </div>
+          <div class="trainer-divider"></div>
+          <p style="font-size:.85rem;color:var(--muted);line-height:1.6;">
+            <em>« Créer des événements qui font vibrer la communauté, c'est ma raison d'être sur un serveur RP. »</em>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPES SECTION -->
+  <section class="types-section">
+    <div class="container">
+      <div class="eyebrow">Mes types</div>
+      <h2 class="section-title">Ce que j'apporte</h2>
+      <p class="section-desc">Comme un Pokémon polyvalent, j'ai plusieurs types de compétences à offrir.</p>
+      <div class="types-grid">
+        <div class="type-pill feu">
+          <div class="type-pill-icon">🔥</div>
+          <div class="type-pill-name">Énergie</div>
+        </div>
+        <div class="type-pill psy">
+          <div class="type-pill-icon">🔮</div>
+          <div class="type-pill-name">Créativité</div>
+        </div>
+        <div class="type-pill eau">
+          <div class="type-pill-icon">💧</div>
+          <div class="type-pill-name">Calme</div>
+        </div>
+        <div class="type-pill elec">
+          <div class="type-pill-icon">⚡</div>
+          <div class="type-pill-name">Rapidité</div>
+        </div>
+        <div class="type-pill plante">
+          <div class="type-pill-icon">🌿</div>
+          <div class="type-pill-name">Patience</div>
+        </div>
+        <div class="type-pill glace">
+          <div class="type-pill-icon">❄️</div>
+          <div class="type-pill-name">Sang-froid</div>
+        </div>
+        <div class="type-pill dragon">
+          <div class="type-pill-icon">🐉</div>
+          <div class="type-pill-name">Leadership</div>
+        </div>
+        <div class="type-pill sol">
+          <div class="type-pill-icon">🌍</div>
+          <div class="type-pill-name">Fiabilité</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCES TIMELINE -->
+  <section class="xp-section">
+    <div class="container">
+      <div class="eyebrow">Parcours</div>
+      <h2 class="section-title">Expériences RP</h2>
+      <p class="section-desc">Quelques-uns des serveurs où j'ai construit mes compétences.</p>
+      <div class="xp-list">
+        <div class="xp-item">
+          <div class="xp-line">
+            <div class="xp-dot">🏅</div>
+            <div class="xp-connector"></div>
+          </div>
+          <div class="xp-body">
+            <div class="xp-meta">
+              <span class="xp-role">Animateur / Staff</span>
+              <span class="type-tag t-normal" style="font-size:.68rem;">Ancien poste</span>
+            </div>
+            <div class="xp-server">Serveur RP  GMod</div>
+            <p class="xp-desc">Organisation d'événements, gestion des situations RP, modération active. Développement d'un sens aigu de l'animation et de la gestion de communauté.</p>
+          </div>
+        </div>
+        <div class="xp-item">
+          <div class="xp-line">
+            <div class="xp-dot">⚡</div>
+            <div class="xp-connector"></div>
+          </div>
+          <div class="xp-body">
+            <div class="xp-meta">
+              <span class="xp-role">Modérateur</span>
+              <span class="type-tag t-elec" style="font-size:.68rem;">Staff</span>
+            </div>
+            <div class="xp-server">Serveur RP  GMod</div>
+            <p class="xp-desc">Gestion des conflits, application du règlement, soutien aux joueurs. Apprentissage de la rigueur et de la diplomatie.</p>
+          </div>
+        </div>
+        <div class="xp-item">
+          <div class="xp-line">
+            <div class="xp-dot">🌿</div>
+            <div class="xp-connector"></div>
+          </div>
+          <div class="xp-body">
+            <div class="xp-meta">
+              <span class="xp-role">Joueur expérimenté</span>
+              <span class="type-tag t-plante" style="font-size:.68rem;">15+ serveurs</span>
+            </div>
+            <div class="xp-server">Divers serveurs RP</div>
+            <p class="xp-desc">Plus de 15 autres serveurs RP explorés en tant que joueur  une vision globale de ce qui fait vivre ou mourir une communauté.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARDS -->
+  <section id="candidature" class="cards-section">
+    <div class="container">
+      <div class="eyebrow">Candidature</div>
+      <h2 class="section-title">Sections détaillées</h2>
+      <p class="section-desc">Chaque section de ma candidature, accessible directement.</p>
+      <div class="cards-grid">
+        <a href="candidature.html#motivation" class="card">
+          <div class="card-top">
+            <div class="card-badge cb-red">🔥</div>
+            <span class="type-tag t-feu">Feu · Motivation</span>
+          </div>
+          <h3>Pourquoi ce serveur ?</h3>
+          <p>Mes raisons de rejoindre ALD PokémonRP et la vision que j'apporte à la communauté.</p>
+          <div class="card-foot">
+            <span class="card-link">Lire <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+          </div>
+        </a>
+
+        <a href="candidature.html#experiences" class="card">
+          <div class="card-top">
+            <div class="card-badge cb-blue">⚡</div>
+            <span class="type-tag t-elec">Électrik · XP</span>
+          </div>
+          <h3>Mes expériences RP</h3>
+          <p>7 serveurs, 2 postes staff, 4 900 heures GMod  un parcours construit dans la durée.</p>
+          <div class="card-foot">
+            <span class="card-link">Lire <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+          </div>
+        </a>
+
+        <a href="candidature.html#competences" class="card">
+          <div class="card-top">
+            <div class="card-badge cb-teal">💧</div>
+            <span class="type-tag t-eau">Eau · Skills</span>
+          </div>
+          <h3>Compétences</h3>
+          <p>Animation, gestion de communauté, création d'événements immersifs et sens du détail.</p>
+          <div class="card-foot">
+            <span class="card-link">Lire <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+          </div>
+        </a>
+
+        <a href="candidature.html#events" class="card">
+          <div class="card-top">
+            <div class="card-badge cb-green">🌿</div>
+            <span class="type-tag t-plante">Plante · Idées</span>
+          </div>
+          <h3>Idées d'événements</h3>
+          <p>3 concepts d'événements Pokémon inédits, pensés sur mesure pour ALD PokémonRP.</p>
+          <div class="card-foot">
+            <span class="card-link">Lire <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+          </div>
+        </a>
+
+        <a href="candidature.html#engagement" class="card">
+          <div class="card-top">
+            <div class="card-badge cb-purple">🔮</div>
+            <span class="type-tag t-psy">Psy · Engagement</span>
+          </div>
+          <h3>Mes engagements</h3>
+          <p>Ce que je m'engage concrètement à apporter au serveur, chaque semaine sans exception.</p>
+          <div class="card-foot">
+            <span class="card-link">Lire <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+          </div>
+        </a>
+
+        <a href="candidature.html" class="card">
+          <div class="card-top">
+            <div class="card-badge cb-gold">⭐</div>
+            <span class="type-tag" style="background:#f0f0f0;color:#555;">Normal · Tout</span>
+          </div>
+          <h3>Page complète</h3>
+          <p>Toute la candidature réunie en une seule page  détaillée, complète et directe.</p>
+          <div class="card-foot">
+            <span class="card-link">Lire <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-inner">
+        <div class="cta-deco"></div>
+        <div class="cta-deco-2"></div>
+        <div class="cta-text">
+          <h2>Prêt à en savoir plus ?</h2>
+          <p>Ma candidature complète  motivations, expériences, idées d'événements et engagements envers ALD PokémonRP.</p>
+        </div>
+        <a href="candidature.html" class="btn-light">Voir la candidature →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <a href="#" class="footer-logo">
+        <div class="pokeball sm"></div>
+        Lee
+      </a>
+      <ul class="footer-links">
+        <li><a href="#apropos">À propos</a></li>
+        <li><a href="#candidature">Sections</a></li>
+        <li><a href="candidature.html">Candidature</a></li>
+      </ul>
+      <span class="footer-copy">ALD PokémonRP · 2025</span>
+    </div>
+  </footer>
+
+  <!-- SIDE DECORATIONS -->
+  <style>
+    .side-deco {
+      position: fixed;
+      top: 0; bottom: 0;
+      width: 160px;
+      pointer-events: none;
+      z-index: 0;
+      display: none;
+    }
+    @media (min-width: 1440px) { .side-deco { display: block; } }
+
+    .side-deco.left  { left: 0; }
+    .side-deco.right { right: 0; }
+
+    .sd-item {
+      position: absolute;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Pokéballs SVG */
+    .sd-ball {
+      border-radius: 50%;
+      background: linear-gradient(180deg, var(--red) 50%, #fff 50%);
+      border: 2px solid rgba(28,28,30,.15);
+      position: relative;
+    }
+    .sd-ball::before {
+      content: '';
+      position: absolute; left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      border-radius: 50%;
+      background: #fff; border: 2px solid rgba(28,28,30,.15);
+    }
+    .sd-ball::after {
+      content: '';
+      position: absolute; left: -2px; right: -2px;
+      top: calc(50% - 1px); height: 2px;
+      background: rgba(28,28,30,.15);
+    }
+    .sd-ball.s28 { width:28px;height:28px; } .sd-ball.s28::before { width:8px;height:8px; }
+    .sd-ball.s40 { width:40px;height:40px; } .sd-ball.s40::before { width:11px;height:11px; }
+    .sd-ball.s56 { width:56px;height:56px; border-width:3px; } .sd-ball.s56::before { width:15px;height:15px;border-width:3px; } .sd-ball.s56::after { left:-3px;right:-3px;height:3px; }
+    .sd-ball.s72 { width:72px;height:72px; border-width:3px; } .sd-ball.s72::before { width:20px;height:20px;border-width:3px; } .sd-ball.s72::after { left:-3px;right:-3px;height:3px; }
+
+    /* Great ball — blue top */
+    .sd-ball.great { background: linear-gradient(180deg, #3a7bd5 50%, #fff 50%); }
+    /* Ultra ball — black top */
+    .sd-ball.ultra { background: linear-gradient(180deg, #1c1c1e 50%, #ffd700 50%); }
+    /* Master ball — purple top */
+    .sd-ball.master { background: linear-gradient(180deg, #7c3aed 50%, #fff 50%); }
+
+    /* Type pills */
+    .sd-type {
+      padding: .25rem .7rem; border-radius: 999px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .07em;
+      white-space: nowrap; opacity: .75;
+    }
+
+    /* Footprint */
+    .sd-footprint { font-size: 1.2rem; opacity: .2; }
+
+    /* Star / sparkle */
+    .sd-star { font-size: 1rem; opacity: .3; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes sd-float-a { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-18px) rotate(6deg)} }
+    @keyframes sd-float-b { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(14px) rotate(-5deg)} }
+    @keyframes sd-float-c { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-10px) scale(1.06)} }
+    @keyframes sd-float-d { 0%,100%{transform:translateY(0) rotate(0deg)} 33%{transform:translateY(-22px) rotate(10deg)} 66%{transform:translateY(8px) rotate(-4deg)} }
+    @keyframes sd-spin    { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    @keyframes sd-spin-slow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    @keyframes sd-pulse   { 0%,100%{opacity:.18} 50%{opacity:.45} }
+    @keyframes sd-bounce  { 0%,100%{transform:translateY(0)} 40%{transform:translateY(-12px)} 60%{transform:translateY(-6px)} }
+
+    /* LEFT items */
+    .l1  { top:12%;  left:20px;  animation: sd-float-a 7s ease-in-out infinite; }
+    .l2  { top:22%;  left:80px;  animation: sd-float-b 9s ease-in-out infinite .5s; }
+    .l3  { top:34%;  left:30px;  animation: sd-float-c 11s ease-in-out infinite 1s; }
+    .l4  { top:44%;  left:90px;  animation: sd-spin-slow 25s linear infinite; opacity:.12; }
+    .l5  { top:55%;  left:18px;  animation: sd-float-d 13s ease-in-out infinite 2s; }
+    .l6  { top:64%;  left:75px;  animation: sd-float-a 8s ease-in-out infinite .8s; }
+    .l7  { top:74%;  left:35px;  animation: sd-float-b 10s ease-in-out infinite 1.5s; }
+    .l8  { top:82%;  left:95px;  animation: sd-pulse 4s ease-in-out infinite; }
+    .l9  { top:90%;  left:25px;  animation: sd-float-c 6s ease-in-out infinite 0.3s; }
+    .l10 { top:28%;  left:115px; animation: sd-bounce 5s ease-in-out infinite; }
+    .l11 { top:50%;  left:50px;  animation: sd-float-a 14s ease-in-out infinite 3s; opacity:.15; }
+    .l12 { top:70%;  left:110px; animation: sd-float-b 7s ease-in-out infinite 1s; }
+
+    /* RIGHT items */
+    .r1  { top:8%;   right:25px; animation: sd-float-b 8s ease-in-out infinite .3s; }
+    .r2  { top:18%;  right:85px; animation: sd-float-a 10s ease-in-out infinite 1s; }
+    .r3  { top:30%;  right:20px; animation: sd-float-d 12s ease-in-out infinite 0.5s; }
+    .r4  { top:40%;  right:95px; animation: sd-spin-slow 30s linear infinite reverse; opacity:.10; }
+    .r5  { top:52%;  right:30px; animation: sd-float-c 9s ease-in-out infinite 2s; }
+    .r6  { top:62%;  right:80px; animation: sd-float-b 7s ease-in-out infinite 0.8s; }
+    .r7  { top:72%;  right:22px; animation: sd-float-a 11s ease-in-out infinite 1.8s; }
+    .r8  { top:80%;  right:90px; animation: sd-pulse 5s ease-in-out infinite 0.5s; }
+    .r9  { top:88%;  right:40px; animation: sd-float-c 8s ease-in-out infinite; }
+    .r10 { top:25%;  right:110px;animation: sd-bounce 6s ease-in-out infinite 0.5s; }
+    .r11 { top:46%;  right:55px; animation: sd-float-d 15s ease-in-out infinite 4s; opacity:.15; }
+    .r12 { top:67%;  right:115px;animation: sd-float-a 9s ease-in-out infinite 2.5s; }
+  </style>
+
+  <!-- LEFT side -->
+  <div class="side-deco left" aria-hidden="true">
+    <div class="sd-item l1">  <div class="sd-ball s56"></div> </div>
+    <div class="sd-item l2">  <div class="sd-ball s28 great"></div> </div>
+    <div class="sd-item l3">  <span class="sd-type" style="background:#ffebe6;color:#c0392b;">🔥 Feu</span> </div>
+    <div class="sd-item l4">  <div class="sd-ball s72"></div> </div>
+    <div class="sd-item l5">  <div class="sd-ball s40 ultra"></div> </div>
+    <div class="sd-item l6">  <span class="sd-type" style="background:#e8f0fc;color:#1a5fb4;">💧 Eau</span> </div>
+    <div class="sd-item l7">  <div class="sd-ball s28"></div> </div>
+    <div class="sd-item l8">  <span class="sd-star">✦</span> </div>
+    <div class="sd-item l9">  <div class="sd-ball s40 great"></div> </div>
+    <div class="sd-item l10"> <span class="sd-type" style="background:#edf7ee;color:#2d6a2d;">🌿 Plante</span> </div>
+    <div class="sd-item l11"> <div class="sd-ball s72 master"></div> </div>
+    <div class="sd-item l12"> <span class="sd-type" style="background:#fff8e1;color:#b8860b;">⚡ Élec</span> </div>
+  </div>
+
+  <!-- RIGHT side -->
+  <div class="side-deco right" aria-hidden="true">
+    <div class="sd-item r1">  <div class="sd-ball s40 great"></div> </div>
+    <div class="sd-item r2">  <span class="sd-type" style="background:#f9ebff;color:#6a1f9e;">🔮 Psy</span> </div>
+    <div class="sd-item r3">  <div class="sd-ball s56 ultra"></div> </div>
+    <div class="sd-item r4">  <div class="sd-ball s72"></div> </div>
+    <div class="sd-item r5">  <span class="sd-type" style="background:#ffebe6;color:#c0392b;">🔥 Feu</span> </div>
+    <div class="sd-item r6">  <div class="sd-ball s28"></div> </div>
+    <div class="sd-item r7">  <span class="sd-type" style="background:#ece8ff;color:#4040c0;">🐉 Dragon</span> </div>
+    <div class="sd-item r8">  <span class="sd-star">✦</span> </div>
+    <div class="sd-item r9">  <div class="sd-ball s40 master"></div> </div>
+    <div class="sd-item r10"> <span class="sd-type" style="background:#e8f0fc;color:#1a5fb4;">💧 Eau</span> </div>
+    <div class="sd-item r11"> <div class="sd-ball s72 great"></div> </div>
+    <div class="sd-item r12"> <span class="sd-type" style="background:#edf7ee;color:#2d6a2d;">🌿 Plante</span> </div>
+  </div>
+
+</body>
+</html>
